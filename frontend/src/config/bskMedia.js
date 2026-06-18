@@ -1,94 +1,95 @@
 /**
- * BSK Watch — central media catalogue for Shri Bandi Sanjay Kumar.
+ * Iraq Watch — central media catalogue for Iraq intelligence platform.
  *
- * All URLs are fetched from public sources (Wikipedia's stable Special:FilePath
- * redirect, which always serves the current version of a Commons file). If any
- * URL fails to load, the <BskImage> helper falls back to /policelogo.jpg shipped
- * with the app, so the UI never breaks.
+ * All Wikipedia URLs use the stable Special:FilePath redirect which
+ * always serves the current version of a Commons file.
+ * If any URL fails to load, the app falls back to /policelogo.jpg.
  *
- * To swap any image, just edit the `src` field. No other code needs to change.
+ * To swap any image, just edit the `src` field.
  */
 
 const wiki = (filename) =>
   `https://en.wikipedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}`;
 
-/* ─── Portrait & action shots of Shri Bandi Sanjay Kumar ─────────── */
+/* ─── Portrait of President of Iraq — Abdul Latif Rashid ─────────── */
 export const BSK_PORTRAITS = [
   {
-    id: 'portrait-primary',
-    src: wiki('Bandi Sanjay Kumar.jpg'),
-    alt: 'Shri Bandi Sanjay Kumar — Member of Parliament, Karimnagar',
-    caption: 'Member of Parliament · Karimnagar',
+    id: 'portrait-president',
+    src: wiki('Abdul_Latif_Rashid.jpg'),
+    alt: 'Abdul Latif Rashid — President of Iraq',
+    caption: 'President of Iraq',
   },
   {
-    id: 'portrait-rally',
-    src: wiki('Bandi Sanjay Kumar (cropped).jpg'),
-    alt: 'Shri Bandi Sanjay Kumar addressing a public rally',
-    caption: 'Public rally',
+    id: 'portrait-pm',
+    src: wiki('Mohammed_Shia%27_Al-Sudani.jpg'),
+    alt: 'Mohammed Shia Al-Sudani — Prime Minister of Iraq',
+    caption: 'Prime Minister of Iraq',
   },
 ];
 
 /* The "hero" image used across the app (login, header, dashboard avatar). */
 export const BSK_HERO = BSK_PORTRAITS[0];
 
-/* ─── Karimnagar Lok Sabha constituency imagery ──────────────────── */
+/* ─── Iraq landmarks gallery ──────────────────────────────────────── */
 export const KARIMNAGAR_GALLERY = [
   {
-    id: 'kn-elgandal',
-    src: wiki('Elgandal Fort.jpg'),
-    alt: 'Elgandal Fort, Karimnagar',
-    caption: 'Elgandal Fort · Karimnagar',
+    id: 'iraq-parliament',
+    src: wiki('Iraqi_Council_of_Representatives.jpg'),
+    alt: 'Iraqi Council of Representatives — Baghdad',
+    caption: 'Iraqi Parliament · Baghdad',
   },
   {
-    id: 'kn-lower-manair',
-    src: wiki('Lower Manair Dam.jpg'),
-    alt: 'Lower Manair Dam, Karimnagar',
-    caption: 'Lower Manair Dam',
+    id: 'iraq-al-shaheed',
+    src: wiki('Al-Shaheed_Monument.jpg'),
+    alt: 'Martyr Monument — Baghdad',
+    caption: 'Al-Shaheed Monument · Baghdad',
   },
   {
-    id: 'kn-vemulawada',
-    src: wiki('Sri Raja Rajeshwara Swamy Temple Vemulawada.jpg'),
-    alt: 'Sri Raja Rajeshwara Swamy Temple, Vemulawada',
-    caption: 'Vemulawada Temple',
+    id: 'iraq-babylon',
+    src: wiki('Ishtar_gate_in_Babylon_site.jpg'),
+    alt: 'Babylon ruins — Babil Governorate',
+    caption: 'Ancient Babylon · Babil',
   },
   {
-    id: 'kn-jagtial',
-    src: wiki('Jagtial Fort.jpg'),
-    alt: 'Jagtial Fort',
-    caption: 'Jagtial Fort',
+    id: 'iraq-karbala',
+    src: wiki('Imam_Hussein_Shrine.jpg'),
+    alt: 'Imam Hussein Shrine — Karbala',
+    caption: 'Imam Hussein Shrine · Karbala',
   },
 ];
 
-/* ─── BJP party visual marks ─────────────────────────────────────── */
+/* ─── Iraq flag / national symbol ────────────────────────────────── */
 export const BJP_MARK = {
-  flag: wiki('Flag of Bharatiya Janata Party.svg'),
-  logo: wiki('Bharatiya Janata Party logo.svg'),
+  flag: wiki('Flag_of_Iraq.svg'),
+  logo: wiki('Emblem_of_Iraq.svg'),
 };
 
-/* ─── Local fallback served from /public  ────────────────────────── */
+/* ─── Local fallback served from /public ─────────────────────────── */
 export const LOCAL_FALLBACK = '/policelogo.jpg';
 
-/* ─── 7 Assembly segments of the Karimnagar Lok Sabha PC ─────────── */
+/* ─── 7 Key monitoring governorates for Iraq Watch ──────────────── */
 export const KARIMNAGAR_ASSEMBLY_SEGMENTS = [
-  { name: 'Karimnagar',  district: 'Karimnagar' },
-  { name: 'Choppadandi', district: 'Karimnagar' },
-  { name: 'Vemulawada',  district: 'Rajanna Sircilla' },
-  { name: 'Sircilla',    district: 'Rajanna Sircilla' },
-  { name: 'Manakondur',  district: 'Karimnagar' },
-  { name: 'Husnabad',    district: 'Siddipet' },
-  { name: 'Huzurabad',   district: 'Karimnagar' },
+  { name: 'Baghdad',   district: 'Baghdad Governorate' },
+  { name: 'Basra',     district: 'Basra Governorate' },
+  { name: 'Mosul',     district: 'Nineveh Governorate' },
+  { name: 'Erbil',     district: 'Erbil Governorate' },
+  { name: 'Kirkuk',    district: 'Kirkuk Governorate' },
+  { name: 'Najaf',     district: 'Najaf Governorate' },
+  { name: 'Karbala',   district: 'Karbala Governorate' },
 ];
 
-/* ─── Talking-points BSK champions (used by AI summary / dashboard) */
+/* ─── Key monitoring topics for Iraq intelligence platform ─────── */
 export const BSK_FOCUS_TOPICS = [
-  'Karimnagar development',
-  'Lower Manair Dam',
-  'Telangana state politics',
-  'BJP Telangana growth',
-  'Anti-corruption',
-  'Hindutva',
-  'Backward classes welfare',
-  'Farmer issues',
-  'Drinking water — Mission Bhagiratha',
-  'Granite & textile industries of Karimnagar',
+  'Iraq security situation',
+  'ISIS / Daesh activity',
+  'PMF (Hashd al-Shaabi) operations',
+  'Kurdish autonomy & KRG politics',
+  'Iraq-Iran relations',
+  'US coalition presence in Iraq',
+  'Kirkuk disputed territories',
+  'Baghdad political crisis',
+  'Iraqi oil sector & Basra',
+  'Sectarian tensions — Shia/Sunni/Kurd',
+  'War crimes & humanitarian crises',
+  'Iraqi elections & government formation',
 ];

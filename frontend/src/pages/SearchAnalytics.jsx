@@ -9,11 +9,11 @@ import TopRegionsCard from '../components/searchAnalytics/TopRegionsCard';
 import RelatedSearchesCard from '../components/searchAnalytics/RelatedSearchesCard';
 import TrendingScoreCard from '../components/searchAnalytics/TrendingScoreCard';
 
-const RECENT_STORAGE_KEY = 'bsk:searchAnalytics:recent';
-const PREFS_STORAGE_KEY = 'bsk:searchAnalytics:prefs';
+const RECENT_STORAGE_KEY = 'iraq:searchAnalytics:recent';
+const PREFS_STORAGE_KEY = 'iraq:searchAnalytics:prefs';
 const AUTO_REFRESH_MS = 5 * 60 * 1000;
 const MAX_RECENT = 10;
-const DEFAULT_QUERY = 'Bandi Sanjay';
+const DEFAULT_QUERY = 'Baghdad security';
 
 const loadJson = (key, fallback) => {
   try {
@@ -30,7 +30,7 @@ const SearchAnalytics = () => {
   const initialPrefs = useMemo(() => loadJson(PREFS_STORAGE_KEY, {}), []);
 
   const [query, setQuery] = useState(initialPrefs.query || DEFAULT_QUERY);
-  const [country, setCountry] = useState(initialPrefs.country || 'IN');
+  const [country, setCountry] = useState(initialPrefs.country || 'IQ');
   const [range, setRange] = useState(initialPrefs.range || '7');
   const [property, setProperty] = useState(initialPrefs.property || 'web');
   const [category, setCategory] = useState(
@@ -236,8 +236,8 @@ const SearchAnalytics = () => {
           <TrendingUp className="h-10 w-10 text-orange-500/60" />
           <p className="text-base font-semibold">Search any keyword to begin</p>
           <p className="text-sm text-muted-foreground max-w-md">
-            Type a keyword like <span className="font-medium">Bandi Sanjay</span> or{' '}
-            <span className="font-medium">train accident</span> above and hit Analyze.
+            Type a keyword like <span className="font-medium">Baghdad security</span> or{' '}
+            <span className="font-medium">Iraq PMF</span> above and hit Analyze.
           </p>
         </Card>
       )}

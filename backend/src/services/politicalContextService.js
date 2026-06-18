@@ -6,10 +6,10 @@
  * Pure-JS, deterministic, NO LLM call. Given a piece of social-media
  * text, this service produces a structured snapshot of which political
  * entities are mentioned, who the primary target is, and how the content
- * relates to Bandi Sanjay Kumar (BSK).
+ * relates to Iraq Watch intelligence topics.
  *
  * The downstream `politicalSentimentService` injects this snapshot into
- * its LLM prompt so the model reasons about sentiment RELATIVE TO BSK
+ * its LLM prompt so the model reasons about sentiment RELATIVE TO Iraq
  * rather than performing generic positive/negative classification.
  *
  *   buildPoliticalContext(text, { taggedKeyword, authorHandle, platform })
@@ -17,14 +17,14 @@
  *         mentioned_entities: [{ key, canonical, alignment, ... }],
  *         primary_target,            // entity key with highest priority
  *         primary_target_alignment,  // 'ally' | 'opposition' | 'neutral' | null
- *         bsk_relevance,             // 0..1 (deterministic heuristic)
+ *         bsk_relevance,             // 0..1 (deterministic heuristic — Iraq relevance score)
  *         mode,                      // 'about_bsk' | 'about_opposition'
  *                                    // | 'general_politics' | 'civic_grievance'
  *                                    // | 'irrelevant'
  *         has_bsk_mention,
  *         has_opposition_mention,
  *         has_ally_mention,
- *         language_hints: { has_telugu, has_hindi, has_devanagari, ... },
+ *         language_hints: { has_arabic, has_kurdish, has_romanized, ... },
  *         summary,                   // human-readable one-liner for prompt
  *       }
  */

@@ -1,11 +1,11 @@
 /**
  * alertsToMentionsService
  * ───────────────────────────────────────────────────────────────────────
- * BSK Watch · Alerts → Mentions promotion pipeline.
+ * Iraq Watch · Alerts → Mentions promotion pipeline.
  *
- *   Alerts (DB)  ──►  Ollama BSK relevance gate  ──►  Mentions (Grievances)
+ *   Alerts (DB)  ──►  Ollama Iraq relevance gate  ──►  Mentions (Grievances)
  *
- * For every Alert that has not yet been evaluated by the BSK gate, this
+ * For every Alert that has not yet been evaluated by the Iraq relevance gate, this
  * service:
  *
  *   1. Resolves the alert's underlying text + media + author (joining
@@ -13,7 +13,7 @@
  *   2. Runs the resolved text through `bskRelevanceFilterService.checkRelevance`,
  *      which uses a heuristic short-circuit and falls through to an Ollama
  *      JSON gate for ambiguous text.
- *   3. If the gate marks `is_bsk=true` with confidence ≥ MIN_CONFIDENCE,
+ *   3. If the gate marks `is_bsk=true` (Iraq-relevant) with confidence ≥ MIN_CONFIDENCE,
  *      the alert is promoted to the Grievance (Mentions) collection via
  *      the shared `createGrievanceFromPost` helper — so the promoted record
  *      flows through the same downstream analysis as anything else in

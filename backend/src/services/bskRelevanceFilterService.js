@@ -1,24 +1,24 @@
 /**
- * bskRelevanceFilterService
+ * relevanceFilterService
  *
- * The fast single-pass Ollama gate that decides whether a tweet is about
- * Shri Bandi Sanjay Kumar (MP Karimnagar, BJP Telangana). Used by the
- * BSK pipeline before any heavyweight categorisation runs, so we never
- * waste a dual-pass analysis on a tweet that isn't even about him.
+ * Fast single-pass Ollama gate that decides whether a post is relevant to
+ * Iraq Watch — the Iraq intelligence monitoring platform. Used before any
+ * heavyweight categorisation runs, so we never waste a dual-pass analysis
+ * on content that has no Iraq relevance.
  *
- * Input  : raw tweet text (string)
+ * Input  : raw post text (string)
  * Output : {
- *            is_bsk:           boolean,
+ *            is_bsk:           boolean,   (true = Iraq-relevant)
  *            confidence:       number 0..1,
  *            stance:           'positive' | 'negative' | 'neutral' | 'unknown',
- *            topic:            short string  (e.g. "POCSO case", "Karimnagar dev"),
+ *            topic:            short string (e.g. "ISIS attack", "Baghdad security"),
  *            reason:           one-line natural-language explanation,
- *            target:           'bsk' | 'bsk_son' | 'bjp_telangana' | 'unrelated',
+ *            target:           'president_iraq' | 'pm_sudani' | 'iraq_security' | 'unrelated',
  *          }
  *
- * Heuristic fast-path: any tweet text containing an unambiguous BSK token
- * (name variants, official handle, son's name) returns true without
- * hitting Ollama, with confidence inferred from the matched token.
+ * Heuristic fast-path: any text containing an unambiguous Iraq token
+ * (president/PM name variants, political parties, security topics) returns
+ * true without hitting Ollama.
  *
  * If Ollama is unreachable or returns garbage we err on the side of the
  * heuristic — so the pipeline keeps producing data even if Ollama is down.
@@ -31,27 +31,33 @@ const OLLAMA_TIMEOUT  = parseInt(process.env.BSK_FILTER_TIMEOUT_MS || '15000', 1
 
 // ─── Heuristic tokens — case-insensitive substring match ───────────
 const HARD_BSK_TOKENS = [
-  // English name variants
-  'bandi sanjay',
-  'bsk karimnagar',
-  '@bandisanjay',
-  // Son's name (multiple spellings)
-  'bandi bhageerath', 'bandi bhagirath', 'bandi bageerath',
-  'sai bhagirath',    'sai bhageerath',
-  // Telugu
-  'బండి సంజయ్',
-  // Hindi
-  'बंडी संजय',
+  // President of Iraq
+  'abdul latif rashid', 'latif rashid',
+  // Prime Minister
+  'al-sudani', 'alsudani', 'mohammed shia', 'sudani iraq',
+  // Key political figures
+  'muqtada al-sadr', 'muqtada sadr', 'moqtada sadr',
+  'nouri al-maliki', 'maliki iraq',
+  'masoud barzani', 'nechirvan barzani',
+  'hadi al-amiri', 'amiri pmf',
+  // Security / armed groups
+  'pmf iraq', 'hashd al-sha', 'hashd alshaabi', 'popular mobilization',
+  'isis iraq', 'daesh iraq', 'islamic state iraq',
+  // Iraq political context
+  'iraq parliament', 'iraqi government', 'baghdad security',
+  'coordination framework', 'state of law coalition',
+  'kurdish region iraq', 'krg iraq',
+  // Arabic
+  'جمهورية العراق', 'رئيس العراق', 'رئيس الوزراء',
   // Hashtags
-  '#bandisanjay', '#bandimustresign', '#bandibhageerath', '#bandibhagirath',
+  '#iraq', '#baghdad', '#pmf', '#isis_iraq',
 ];
 
 const SOFT_BSK_TOKENS = [
-  // Karimnagar PC context that often appears with BSK
-  'karimnagar mp', 'mp karimnagar',
-  'bjp telangana president',
-  'minister of state home',
-  'mos home bandi',
+  'iraq news', 'iraq security', 'iraq politics',
+  'baghdad government', 'mosul security',
+  'kirkuk dispute', 'basra protests',
+  'iraqi election', 'iraqi army',
 ];
 
 function heuristicMatch(text) {
@@ -77,23 +83,24 @@ function extractJson(blob) {
 }
 
 /* ─── Ollama call ─────────────────────────────────────────────── */
-async function askOllama(tweetText) {
-  const prompt = `You are filtering tweets for a Bandi Sanjay Kumar (BSK) media-monitoring system.
-BSK is the BJP MP from Karimnagar Lok Sabha (Telangana, India), former BJP Telangana state president,
-and currently Minister of State for Home Affairs. His son Bandi Bhageerath (also spelt
-Bhagirath / Bageerath / Sai Bhagirath) is in the news for a POCSO case.
+async function askOllama(postText) {
+  const prompt = `You are filtering social media posts for an Iraq Watch intelligence monitoring system.
+Iraq Watch monitors political, security, and social events related to the Republic of Iraq — covering
+the President (Abdul Latif Rashid), Prime Minister (Mohammed Shia Al-Sudani), key political figures
+(Muqtada al-Sadr, Maliki, Barzani), security forces (Iraqi Army, PMF/Hashd al-Sha'abi), and threats
+(ISIS/Daesh). The platform covers all 18 Iraqi governorates, especially Baghdad, Basra, Mosul, Erbil.
 
-TWEET (verbatim, may be English / Telugu / Hindi or transliterated):
+POST TEXT (verbatim, may be English / Arabic or transliterated):
 """
-${String(tweetText || '').slice(0, 800)}
+${String(postText || '').slice(0, 800)}
 """
 
-Decide whether this tweet is meaningfully about BSK, his son, or the immediate BJP Telangana
-machinery around him. A tweet that merely mentions Telangana politics generically is NOT relevant.
-A tweet that targets, defends, mocks, praises, or reports on him IS relevant.
+Decide whether this post is meaningfully about Iraq — its politics, security, leaders, armed groups,
+or significant events. A post that merely mentions the Middle East generically is NOT relevant.
+A post that targets, discusses, or reports on Iraq IS relevant.
 
 Reply with EXACTLY one JSON object on a single line, no prose, no markdown:
-{"is_bsk": true|false, "confidence": 0.0-1.0, "stance": "positive"|"negative"|"neutral"|"unknown", "target": "bsk"|"bsk_son"|"bjp_telangana"|"unrelated", "topic": "short label", "reason": "one short sentence"}`;
+{"is_bsk": true|false, "confidence": 0.0-1.0, "stance": "positive"|"negative"|"neutral"|"unknown", "target": "president_iraq"|"pm_sudani"|"iraq_security"|"unrelated", "topic": "short label", "reason": "one short sentence"}`;
 
   try {
     const res = await axios.post(
@@ -115,8 +122,8 @@ Reply with EXACTLY one JSON object on a single line, no prose, no markdown:
 }
 
 /* ─── public API ─────────────────────────────────────────────── */
-async function checkRelevance(tweetText, { allowOllama = true } = {}) {
-  const text = String(tweetText || '').trim();
+async function checkRelevance(postText, { allowOllama = true } = {}) {
+  const text = String(postText || '').trim();
   if (!text) {
     return { is_bsk: false, confidence: 0, stance: 'unknown', target: 'unrelated', topic: '', reason: 'empty text' };
   }
@@ -128,7 +135,7 @@ async function checkRelevance(tweetText, { allowOllama = true } = {}) {
       is_bsk: true,
       confidence: 0.95,
       stance: 'unknown',
-      target: text.toLowerCase().includes('bandi son') || text.toLowerCase().includes('bhageerath') || text.toLowerCase().includes('bhagirath') ? 'bsk_son' : 'bsk',
+      target: 'iraq_security',
       topic: 'name match',
       reason: `Matched token "${heur.token}"`,
       heuristic: true,
@@ -138,15 +145,14 @@ async function checkRelevance(tweetText, { allowOllama = true } = {}) {
   // 2. Ollama gate (skip on demand for speed-only runs)
   if (!allowOllama) {
     return heur.matched
-      ? { is_bsk: true, confidence: 0.55, stance: 'unknown', target: 'bjp_telangana', topic: 'soft match', reason: `Soft token "${heur.token}"`, heuristic: true }
+      ? { is_bsk: true, confidence: 0.55, stance: 'unknown', target: 'iraq_security', topic: 'soft match', reason: `Soft token "${heur.token}"`, heuristic: true }
       : { is_bsk: false, confidence: 0.05, stance: 'unknown', target: 'unrelated', topic: '', reason: 'no token, ollama skipped', heuristic: true };
   }
 
   const llm = await askOllama(text);
   if (!llm || llm.__error) {
-    // Fall back to heuristic if Ollama broken
     return heur.matched
-      ? { is_bsk: true, confidence: 0.5, stance: 'unknown', target: 'bjp_telangana', topic: 'soft match (ollama down)', reason: `Ollama unreachable; soft heuristic on "${heur.token}"`, heuristic: true, ollama_error: llm?.__error }
+      ? { is_bsk: true, confidence: 0.5, stance: 'unknown', target: 'iraq_security', topic: 'soft match (ollama down)', reason: `Ollama unreachable; soft heuristic on "${heur.token}"`, heuristic: true, ollama_error: llm?.__error }
       : { is_bsk: false, confidence: 0.1, stance: 'unknown', target: 'unrelated', topic: '', reason: 'no match + ollama unreachable', heuristic: true, ollama_error: llm?.__error };
   }
 
@@ -155,7 +161,7 @@ async function checkRelevance(tweetText, { allowOllama = true } = {}) {
     is_bsk:     !!llm.is_bsk,
     confidence: Math.max(0, Math.min(1, Number(llm.confidence) || 0)),
     stance:     ['positive', 'negative', 'neutral', 'unknown'].includes(llm.stance) ? llm.stance : 'unknown',
-    target:     ['bsk', 'bsk_son', 'bjp_telangana', 'unrelated'].includes(llm.target) ? llm.target : 'unrelated',
+    target:     ['president_iraq', 'pm_sudani', 'iraq_security', 'unrelated'].includes(llm.target) ? llm.target : 'unrelated',
     topic:      String(llm.topic || '').slice(0, 80),
     reason:     String(llm.reason || '').slice(0, 200),
     heuristic:  false,

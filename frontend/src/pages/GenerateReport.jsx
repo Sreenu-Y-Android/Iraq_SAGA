@@ -38,7 +38,7 @@ const GenerateReport = () => {
     // ... (rest of states remain same)
 
     // --- SECTION-LEVEL EDITABLE STATES ---
-    const [headerGovt, setHeaderGovt] = useState('Government of Telangana');
+    const [headerGovt, setHeaderGovt] = useState('Republic of Iraq');
     const [headerDept, setHeaderDept] = useState('(POLICE DEPARTMENT)');
     const [dateLine, setDateLine] = useState('');
     const [subject, setSubject] = useState('');
@@ -125,7 +125,7 @@ const GenerateReport = () => {
                 const yyyy = format(new Date(), 'yyyy');
                 setSerialNumber(reportData?.serial_number || `${pCode.substring(0, 1)}0001 - ${dd}${mm}${yyyy} `);
 
-                setHeaderGovt(edits.headerGovt || 'Government of Telangana');
+                setHeaderGovt(edits.headerGovt || 'Republic of Iraq');
                 setHeaderDept(edits.headerDept || '(POLICE DEPARTMENT)');
                 setDateLine(edits.dateLine || `Date: ${new Date().toLocaleDateString('en-GB').replace(/\//g, '.')} `);
 
@@ -135,7 +135,7 @@ const GenerateReport = () => {
                 setSubject(edits.subject || `NOTICE: U/Sec: 69(A) & 79(3) Information Technology Amendment Act 2008 and 94 BNSS of India. (Cr.No 11/2026, U/Sec ${sectionsList} of BNS of IT Cell, Hyderabad City)`);
 
                 setGreeting(edits.greeting || 'Sir/Madam,');
-                setIntroText(edits.introText || `I am the Inspector of Police, presently working at IT Cell, Hyderabad City, Telangana, India. I am investigating the above-referenced crime, which pertains to the circulation of objectionable and communally sensitive content on the social media platform ${platform} (formerly Twitter) operated by ${operator}.`);
+                setIntroText(edits.introText || `I am the Intelligence Officer, presently working at Iraq Watch Intelligence Center, Baghdad, Iraq. I am investigating the above-referenced matter, which pertains to the circulation of objectionable and sensitive content on the social media platform ${platform} operated by ${operator}.`);
 
                 let postDateStr = 'recent date';
                 try {
@@ -146,7 +146,7 @@ const GenerateReport = () => {
                 }
 
                 const intent = alertData.threat_details?.intent || 'circulation of sensitive content';
-                setBodyText(edits.bodyText || `It is brought to notice that on ${postDateStr}, posts/videos were uploaded through the below-mentioned ${platform} account, containing content relating to the ${intent}. The said content is highly sensitive in nature, and its continued circulation is likely to incite communal disharmony, thereby posing a serious threat to public order and law & order in Hyderabad City and across the State of Telangana, India.`);
+                setBodyText(edits.bodyText || `It is brought to notice that on ${postDateStr}, posts/videos were uploaded through the below-mentioned ${platform} account, containing content relating to the ${intent}. The said content is highly sensitive in nature, and its continued circulation is likely to incite unrest, thereby posing a serious threat to public order and national security in Baghdad and across the Republic of Iraq.`);
 
                 setAccountHeader(edits.accountHeader || `Alleged ${platform} Account URL`);
 
@@ -202,11 +202,9 @@ const GenerateReport = () => {
                 ));
 
                 setAddressBlock(edits.addressBlock || (
-                    `IT Cell, 4th Floor, Commissioner of Police office, Hyderabad City,\n` +
-                    `Telangana Integrated Command and Control Center (TGICCC) Road No. 12,\n` +
-                    `adj. Sri Puri Jagannath Temple, Bhavani Nagar, Banjara Hills, Hyderabad,\n` +
-                    `Telangana. India, Mobile No: 8712660777\n` +
-                    `e-mail ID: smu-hyderabad@tspolice.gov.in`
+                    `Iraq Watch Intelligence Center, Baghdad,\n` +
+                    `Republic of Iraq\n` +
+                    `e-mail ID: intel@iraqwatch.iq`
                 ));
 
                 setRecipientBlock(edits.recipientBlock || (
@@ -218,9 +216,9 @@ const GenerateReport = () => {
                 ));
 
                 setSignatureBlock(edits.signatureBlock || (
-                    `Inspector of Police,\n` +
-                    `IT Cell, Hyderabad\n` +
-                    `TELANGANA.`
+                    `Intelligence Officer,\n` +
+                    `Iraq Watch Intelligence Center\n` +
+                    `BAGHDAD, IRAQ.`
                 ));
 
                 // --- SIMILAR ALERTS CHECK (Run Once) ---

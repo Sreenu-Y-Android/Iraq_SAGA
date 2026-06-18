@@ -44,7 +44,7 @@ const grievanceSettingsSchema = new mongoose.Schema({
     enum: ['low', 'medium', 'high'],
     default: 'medium'
   },
-  // Karimnagar AC round-robin pointer used when no AC keyword is detected
+  // Baghdad zone round-robin pointer used when no zone keyword is detected
   karimnagar_ac_rr_index: {
     type: Number,
     default: 0

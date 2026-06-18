@@ -227,7 +227,7 @@ const XMonitor = () => {
         if (s.is_verified) return true;
 
         // Heuristic keyword check (Temporary Quick Fix for existing data)
-        const keywords = ['bjp', 'congress', 'inc', 'govt', 'official', 'telangana', 'police', 'collector', 'minister', 'cmo', 'office', 'media'];
+        const keywords = ['iraq', 'baghdad', 'govt', 'official', 'minister', 'security', 'police', 'parliament', 'pmf', 'military', 'office', 'media'];
         return keywords.some(k => name.includes(k) || handle.includes(k));
     }, []);
 

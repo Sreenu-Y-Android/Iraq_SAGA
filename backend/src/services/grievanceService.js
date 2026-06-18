@@ -23,86 +23,78 @@ const translationService = require('./translationService');
 const LOCATION_SERVICE_URL = process.env.LOCATION_SERVICE_URL || 'http://178.255.44.130:5003';
 const { ALL_TELANGANA_LOCATIONS, isTelanganaLocation } = require('../config/telanganaLocations');
 
-// ── City / Town → District mapping for keyword detection (Telangana) ──
+// ── City / Town → Governorate mapping for keyword detection (Iraq) ──
 const KEYWORD_TO_DISTRICT = {
-    // Karimnagar district (BSK home seat)
-    'karimnagar': 'Karimnagar', 'huzurabad': 'Karimnagar', 'jammikunta': 'Karimnagar',
-    'choppadandi': 'Karimnagar', 'manakondur': 'Karimnagar', 'gangadhara': 'Karimnagar',
-    'thimmapur': 'Karimnagar', 'kothapalli': 'Karimnagar', 'ramadugu': 'Karimnagar',
-    'shankarapatnam': 'Karimnagar', 'saidapur': 'Karimnagar', 'elkathurthy': 'Karimnagar',
-    'veenavanka': 'Karimnagar', 'chigurumamidi': 'Karimnagar',
-    // Rajanna Sircilla district
-    'sircilla': 'Rajanna Sircilla', 'rajanna sircilla': 'Rajanna Sircilla', 'vemulawada': 'Rajanna Sircilla',
-    'gambhiraopet': 'Rajanna Sircilla', 'konaraopeta': 'Rajanna Sircilla', 'mustabad': 'Rajanna Sircilla',
-    'ellanthakunta': 'Rajanna Sircilla', 'rudrangi': 'Rajanna Sircilla', 'boinpalli': 'Rajanna Sircilla',
-    // Siddipet district (Husnabad belongs here)
-    'siddipet': 'Siddipet', 'husnabad': 'Siddipet', 'gajwel': 'Siddipet', 'dubbak': 'Siddipet',
-    'cherial': 'Siddipet', 'thoguta': 'Siddipet', 'mirdoddi': 'Siddipet', 'doulthabad': 'Siddipet',
-    // Jagtial district
-    'jagtial': 'Jagtial', 'korutla': 'Jagtial', 'dharmapuri': 'Jagtial', 'metpalli': 'Jagtial',
-    'mallapur': 'Jagtial',
-    // Peddapalli district
-    'peddapalli': 'Peddapalli', 'ramagundam': 'Peddapalli', 'manthani': 'Peddapalli',
-    'godavarikhani': 'Peddapalli', 'sultanabad': 'Peddapalli',
-    // Hyderabad / GHMC
-    'hyderabad': 'Hyderabad', 'secunderabad': 'Hyderabad', 'charminar': 'Hyderabad',
-    'old city': 'Hyderabad', 'malakpet': 'Hyderabad', 'amberpet': 'Hyderabad',
-    'musheerabad': 'Hyderabad', 'khairatabad': 'Hyderabad', 'jubilee hills': 'Hyderabad',
-    'banjara hills': 'Hyderabad', 'nampally': 'Hyderabad', 'mehdipatnam': 'Hyderabad',
-    'tolichowki': 'Hyderabad', 'ameerpet': 'Hyderabad', 'sr nagar': 'Hyderabad',
-    // Rangareddy
-    'rangareddy': 'Rangareddy', 'maheshwaram': 'Rangareddy', 'ibrahimpatnam': 'Rangareddy',
-    'hayathnagar': 'Rangareddy', 'rajendranagar': 'Rangareddy', 'shamshabad': 'Rangareddy',
-    'lb nagar': 'Rangareddy', 'lal bahadur nagar': 'Rangareddy', 'serilingampally': 'Rangareddy',
-    // Medchal-Malkajgiri
-    'medchal': 'Medchal-Malkajgiri', 'malkajgiri': 'Medchal-Malkajgiri', 'quthbullapur': 'Medchal-Malkajgiri',
-    'kukatpally': 'Medchal-Malkajgiri', 'uppal': 'Medchal-Malkajgiri', 'kompally': 'Medchal-Malkajgiri',
-    'alwal': 'Medchal-Malkajgiri', 'shamirpet': 'Medchal-Malkajgiri',
-    // Warangal Urban / Hanamkonda
-    'warangal': 'Warangal', 'hanamkonda': 'Warangal', 'kazipet': 'Warangal',
-    // Mahabubabad / Mulugu / Bhupalpally
-    'mahabubabad': 'Mahabubabad', 'thorrur': 'Mahabubabad', 'dornakal': 'Mahabubabad',
-    'mulugu': 'Mulugu', 'eturnagaram': 'Mulugu', 'venkatapur': 'Mulugu',
-    'bhupalpally': 'Jayashankar Bhupalpally',
-    // Khammam / Bhadradri
-    'khammam': 'Khammam', 'palair': 'Khammam', 'madhira': 'Khammam', 'wyra': 'Khammam',
-    'sathupally': 'Khammam',
-    'kothagudem': 'Bhadradri Kothagudem', 'bhadrachalam': 'Bhadradri Kothagudem',
-    'palvancha': 'Bhadradri Kothagudem', 'yellandu': 'Bhadradri Kothagudem',
-    'aswaraopeta': 'Bhadradri Kothagudem', 'manuguru': 'Bhadradri Kothagudem',
-    // Nizamabad / Kamareddy
-    'nizamabad': 'Nizamabad', 'armoor': 'Nizamabad', 'bodhan': 'Nizamabad', 'balkonda': 'Nizamabad',
-    'kamareddy': 'Kamareddy', 'banswada': 'Kamareddy', 'yellareddy': 'Kamareddy',
-    'jukkal': 'Kamareddy', 'pitlam': 'Kamareddy',
-    // Adilabad / Nirmal / Mancherial / Asifabad
-    'adilabad': 'Adilabad', 'boath': 'Adilabad', 'khanapur': 'Adilabad',
-    'nirmal': 'Nirmal', 'mudhole': 'Nirmal',
-    'mancherial': 'Mancherial', 'bellampalli': 'Mancherial', 'chennur': 'Mancherial',
-    'asifabad': 'Kumuram Bheem Asifabad', 'sirpur': 'Kumuram Bheem Asifabad',
-    'kagaznagar': 'Kumuram Bheem Asifabad',
-    // Nalgonda / Suryapet / Yadadri Bhuvanagiri
-    'nalgonda': 'Nalgonda', 'miryalaguda': 'Nalgonda', 'devarakonda': 'Nalgonda',
-    'huzurnagar': 'Suryapet', 'suryapet': 'Suryapet', 'kodad': 'Suryapet',
-    'thungathurthi': 'Suryapet',
-    'bhongir': 'Yadadri Bhuvanagiri', 'bhuvanagiri': 'Yadadri Bhuvanagiri',
-    'yadadri': 'Yadadri Bhuvanagiri', 'alair': 'Yadadri Bhuvanagiri',
-    'choutuppal': 'Yadadri Bhuvanagiri',
-    // Mahbubnagar / Nagarkurnool / Wanaparthy / Gadwal / Narayanpet / Vikarabad
-    'mahbubnagar': 'Mahbubnagar', 'jadcherla': 'Mahbubnagar', 'shadnagar': 'Mahbubnagar',
-    'devarkadra': 'Mahbubnagar', 'makthal': 'Mahbubnagar',
-    'nagarkurnool': 'Nagarkurnool', 'achampet': 'Nagarkurnool', 'kalwakurthy': 'Nagarkurnool',
-    'kollapur': 'Nagarkurnool',
-    'wanaparthy': 'Wanaparthy',
-    'gadwal': 'Jogulamba Gadwal', 'alampur': 'Jogulamba Gadwal', 'aiza': 'Jogulamba Gadwal',
-    'maldakal': 'Jogulamba Gadwal',
-    'narayanpet': 'Narayanpet', 'kodangal': 'Narayanpet',
-    'vikarabad': 'Vikarabad', 'tandur': 'Vikarabad', 'pargi': 'Vikarabad',
-    // Sangareddy / Medak / Zahirabad / Jangaon
-    'sangareddy': 'Sangareddy', 'patancheru': 'Sangareddy', 'zahirabad': 'Sangareddy',
-    'andole': 'Sangareddy', 'narayankhed': 'Sangareddy', 'jharasangam': 'Sangareddy',
-    'medak': 'Medak', 'narsapur': 'Medak',
-    'jangaon': 'Jangaon', 'station ghanpur': 'Jangaon', 'palakurthi': 'Jangaon',
-    'telangana': 'Telangana',
+    // Baghdad Governorate
+    'baghdad': 'Baghdad', 'sadr city': 'Baghdad', 'kadhimiya': 'Baghdad',
+    'kadhimiyah': 'Baghdad', 'adhamiya': 'Baghdad', 'rusafa': 'Baghdad',
+    'karkh': 'Baghdad', 'mansour': 'Baghdad', 'karrada': 'Baghdad',
+    'dora': 'Baghdad', 'abu ghraib': 'Baghdad', 'taji': 'Baghdad',
+    'mahmoudiya': 'Baghdad', 'latifiya': 'Baghdad', 'yusufiya': 'Baghdad',
+    'arab jabour': 'Baghdad', 'nahrawan': 'Baghdad',
+    // Basra Governorate
+    'basra': 'Basra', 'zubayr': 'Basra', 'qurna': 'Basra',
+    'fao': 'Basra', 'hartha': 'Basra', 'shatt al-arab': 'Basra',
+    'abadan crossing': 'Basra', 'umm qasr': 'Basra',
+    // Nineveh Governorate
+    'mosul': 'Nineveh', 'nineveh': 'Nineveh', 'tel afar': 'Nineveh',
+    'sinjar': 'Nineveh', 'hamdaniya': 'Nineveh', 'bartella': 'Nineveh',
+    'nimrud': 'Nineveh', 'tal kayf': 'Nineveh', 'baaj': 'Nineveh',
+    // Erbil Governorate (Kurdistan)
+    'erbil': 'Erbil', 'arbil': 'Erbil', 'hawler': 'Erbil',
+    'soran': 'Erbil', 'ranya': 'Erbil', 'shaqlawa': 'Erbil',
+    'koya': 'Erbil', 'choman': 'Erbil',
+    // Sulaymaniyah Governorate (Kurdistan)
+    'sulaymaniyah': 'Sulaymaniyah', 'sulaimani': 'Sulaymaniyah',
+    'chamchamal': 'Sulaymaniyah', 'said sadiq': 'Sulaymaniyah',
+    'penjwen': 'Sulaymaniyah', 'darbandikhan': 'Sulaymaniyah',
+    // Halabja Governorate (Kurdistan)
+    'halabja': 'Halabja',
+    // Dohuk Governorate (Kurdistan)
+    'dohuk': 'Dohuk', 'dahuk': 'Dohuk', 'zakho': 'Dohuk',
+    'amadiya': 'Dohuk', 'akre': 'Dohuk', 'batufa': 'Dohuk',
+    // Kirkuk Governorate
+    'kirkuk': 'Kirkuk', 'altun kopru': 'Kirkuk', 'hawija': 'Kirkuk',
+    'dibis': 'Kirkuk', 'daquq': 'Kirkuk',
+    // Anbar Governorate
+    'ramadi': 'Anbar', 'fallujah': 'Anbar', 'anbar': 'Anbar',
+    'haditha': 'Anbar', 'hit': 'Anbar', 'qaim': 'Anbar',
+    'rutba': 'Anbar', 'khalidiya': 'Anbar', 'baghdadi': 'Anbar',
+    'amiriyah fallujah': 'Anbar', 'karma': 'Anbar',
+    // Diyala Governorate
+    'baquba': 'Diyala', 'diyala': 'Diyala', 'khanaqin': 'Diyala',
+    'jalawla': 'Diyala', 'muqdadiya': 'Diyala', 'mandali': 'Diyala',
+    'kifri': 'Diyala', 'sadiyah': 'Diyala',
+    // Saladin Governorate
+    'tikrit': 'Saladin', 'samarra': 'Saladin', 'baiji': 'Saladin',
+    'shirqat': 'Saladin', 'balad': 'Saladin', 'tuz khurmatu': 'Saladin',
+    'duluiyah': 'Saladin', 'ishaqi': 'Saladin',
+    // Babil Governorate
+    'hillah': 'Babil', 'babylon': 'Babil', 'babil': 'Babil',
+    'musayyib': 'Babil', 'hashimiyah': 'Babil', 'mahawil': 'Babil',
+    // Najaf Governorate
+    'najaf': 'Najaf', 'kufa': 'Najaf', 'abu sukhair': 'Najaf',
+    'mishkhab': 'Najaf',
+    // Karbala Governorate
+    'karbala': 'Karbala', 'hindiya': 'Karbala', 'ain tamr': 'Karbala',
+    // Qadisiyyah Governorate
+    'diwaniyah': 'Qadisiyyah', 'afak': 'Qadisiyyah', 'hamza': 'Qadisiyyah',
+    'qadisiyyah': 'Qadisiyyah', 'shinafiyah': 'Qadisiyyah',
+    // Wasit Governorate
+    'kut': 'Wasit', 'wasit': 'Wasit', 'numaniyah': 'Wasit',
+    'zubaidiyah': 'Wasit', 'aziziyah': 'Wasit', 'badra': 'Wasit',
+    // Maysan Governorate
+    'amara': 'Maysan', 'maysan': 'Maysan', 'ali al-gharbi': 'Maysan',
+    'qalat salih': 'Maysan', 'majar al-kabir': 'Maysan',
+    // Thi Qar Governorate
+    'nasiriyah': 'Thi Qar', 'thi qar': 'Thi Qar', 'dhi qar': 'Thi Qar',
+    'shatrah': 'Thi Qar', 'rifai': 'Thi Qar', 'suq al-shuyukh': 'Thi Qar',
+    'chibayish': 'Thi Qar',
+    // Muthanna Governorate
+    'samawah': 'Muthanna', 'muthanna': 'Muthanna', 'rumaitha': 'Muthanna',
+    'khidir': 'Muthanna',
+    // Country level
+    'iraq': 'Iraq', 'iraqi': 'Iraq',
 };
 
 // Build a sorted array for multi-word matching (longest first for greedy match)
@@ -110,25 +102,25 @@ const KEYWORD_LIST = [...ALL_TELANGANA_LOCATIONS]
     .filter(kw => kw.length >= 3) // skip tiny tokens
     .sort((a, b) => b.length - a.length); // longest first
 
-// Assembly segments inside Karimnagar Lok Sabha PC (BSK's seat)
+// Key governorates for Iraq monitoring focus (Baghdad + major flashpoints)
 const KARIMNAGAR_ACS = [
-    'Karimnagar',
-    'Choppadandi',
-    'Vemulawada',
-    'Sircilla',
-    'Manakondur',
-    'Husnabad',
-    'Huzurabad'
+    'Baghdad',
+    'Basra',
+    'Mosul',
+    'Erbil',
+    'Kirkuk',
+    'Najaf',
+    'Karbala'
 ];
 
 const KARIMNAGAR_AC_ALIASES = {
-    'Karimnagar': ['karimnagar', 'karimnagar city', 'karimnagar urban', 'karimnagar rural'],
-    'Choppadandi': ['choppadandi', 'choppadandi sc'],
-    'Vemulawada': ['vemulawada', 'vemulawada temple'],
-    'Sircilla': ['sircilla', 'rajanna sircilla', 'siricilla'],
-    'Manakondur': ['manakondur', 'manakondoor', 'thimmapur'],
-    'Husnabad': ['husnabad', 'husnabaad', 'siddipet husnabad'],
-    'Huzurabad': ['huzurabad', 'huzoorabad', 'jammikunta']
+    'Baghdad': ['baghdad', 'sadr city', 'kadhimiya', 'rusafa', 'karkh'],
+    'Basra': ['basra', 'basra city', 'zubayr', 'fao'],
+    'Mosul': ['mosul', 'nineveh', 'tel afar'],
+    'Erbil': ['erbil', 'arbil', 'hawler', 'kurdistan'],
+    'Kirkuk': ['kirkuk', 'tameem', 'hawija'],
+    'Najaf': ['najaf', 'kufa', 'najaf holy city'],
+    'Karbala': ['karbala', 'hindiya', 'karbala holy city']
 };
 
 const TELUGU_SCRIPT_REGEX = /[\u0C00-\u0C7F]/;
@@ -279,8 +271,8 @@ const enrichWithKarimnagarConstituency = async (baseLocation = {}, text = '', op
     if (!isKarimnagarTaggedLocation(baseLocation)) return baseLocation;
 
     const location = {
-        city: baseLocation.city || 'Karimnagar',
-        district: baseLocation.district || 'Karimnagar',
+        city: baseLocation.city || 'Baghdad',
+        district: baseLocation.district || 'Baghdad',
         constituency: baseLocation.constituency || null,
         keyword_matched: baseLocation.keyword_matched || null,
         lat: baseLocation.lat ?? null,
@@ -447,7 +439,7 @@ const extractAndSaveLocation = async (grievanceId, text, postedBy = {}, extraCon
             const mentionsTelanganaHandle = TELANGANA_RELEVANT_HANDLES.some(h => mentionText.includes(`@${h}`));
 
             if (isTelanganaLocation(text) || isTelanganaLocation(userLocation) || isTaggedToTelangana || mentionsTelanganaHandle) {
-                finalLocation = finalLocation || { city: 'Karimnagar', district: 'Karimnagar' };
+                finalLocation = finalLocation || { city: 'Baghdad', district: 'Baghdad' };
                 finalLocation.constituency = await getNextKarimnagarAcByRoundRobin();
                 finalLocation.source = appendSourceTagOnce(finalLocation.source || 'fallback', 'karimnagar_ac_round_robin');
                 finalLocation.confidence = 0.6;

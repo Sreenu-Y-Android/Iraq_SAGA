@@ -486,7 +486,7 @@ const Dashboard = () => {
     const data = grievanceData?.[grievancePlatform] || grievanceData?.all || {};
     if (grievanceStatus === 'pending') return data.pending ?? 0;
     if (grievanceStatus === 'resolved') return data.resolved ?? 0;
-    // For the "all platforms" total, prefer the Karimnagar summary so this
+    // For the "all platforms" total, prefer the Baghdad summary so this
     // card matches the number shown on /telangana-map (single source of truth).
     if (grievancePlatform === 'all' && grievanceStatus === 'all') {
       const karim = dashboardData?.karimnagarSummary;
@@ -606,16 +606,16 @@ const Dashboard = () => {
           </div>
         </Card>
 
-        {/* Karimnagar Constituency Map — Always Visible */}
+        {/* Iraq Intelligence Map — Always Visible */}
         <Card className="border border-border/50 shadow-sm hover:shadow-md transition-all overflow-hidden lg:col-span-1">
           <div className="flex items-center justify-between px-5 py-3 border-b border-border/30">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-orange-100 rounded-lg">
-                <BarChart3 className="h-3.5 w-3.5 text-orange-600" />
+              <div className="p-1.5 bg-red-100 rounded-lg">
+                <BarChart3 className="h-3.5 w-3.5 text-red-600" />
               </div>
-              <h3 className="text-[13px] font-semibold text-foreground">Karimnagar Constituency</h3>
+              <h3 className="text-[13px] font-semibold text-foreground">Iraq Intelligence Map</h3>
             </div>
-            <span className="text-[10px] text-muted-foreground font-medium">MP Bandi Sanjay Kumar · 7 ACs</span>
+            <span className="text-[10px] text-muted-foreground font-medium">Iraq Watch · 18 Governorates</span>
           </div>
           <div className="flex items-center justify-center bg-white dark:bg-slate-950/20">
             <div className="w-full h-[480px]">

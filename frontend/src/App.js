@@ -60,8 +60,8 @@ const PageLoader = () => (
       <div className="absolute inset-0 rounded-full border-2 border-t-orange-500 border-r-transparent border-b-transparent border-l-transparent animate-spin" />
     </div>
     <div className="flex flex-col items-center gap-1">
-      <span className="text-sm font-bold text-slate-700 tracking-wider uppercase">BSK WATCH · BANDI SANJAY KUMAR</span>
-      <span className="text-[11px] text-slate-400 tracking-widest uppercase">Social Media Intelligence for BJP Telangana</span>
+      <span className="text-sm font-bold text-slate-700 tracking-wider uppercase">IRAQ WATCH · INTELLIGENCE PLATFORM</span>
+      <span className="text-[11px] text-slate-400 tracking-widest uppercase">Social Media Intelligence for Iraq</span>
     </div>
   </div>
 );

@@ -76,7 +76,7 @@ const Layout = () => {
   };
 
   const allNavigation = [
-    { name: 'Telangana', href: '/telangana-map', icon: Globe },
+    { name: 'Iraq Map', href: '/telangana-map', icon: Globe },
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Mentions', href: '/grievances', icon: MessageSquare },
     { name: 'Alerts', href: '/alerts', icon: AlertTriangle },
@@ -112,12 +112,12 @@ const Layout = () => {
         />
       )}
 
-      <header className="fixed top-0 left-0 right-0 h-16 lg:h-20 bg-gradient-to-r from-orange-700 via-orange-600 to-amber-500 z-50 shadow-lg select-none">
-        {/* BJP tri-colour ribbon — top edge */}
+      <header className="fixed top-0 left-0 right-0 h-16 lg:h-20 bg-gradient-to-r from-[#1a1a1a] via-[#CE1126] to-[#8B0000] z-50 shadow-lg select-none">
+        {/* Iraq flag tri-colour ribbon — top edge: red / white / black */}
         <div className="absolute top-0 left-0 right-0 h-1 flex">
-          <div className="flex-1 bg-[#FF9933]" />
+          <div className="flex-1 bg-[#CE1126]" />
           <div className="flex-1 bg-white" />
-          <div className="flex-1 bg-[#138808]" />
+          <div className="flex-1 bg-[#000000]" />
         </div>
         <div className="flex items-center justify-between h-full px-4 lg:px-6 relative">
           <div className="flex items-center gap-3 lg:gap-4 relative z-10">
@@ -133,7 +133,7 @@ const Layout = () => {
             </Button>
 
             <div className="flex items-center gap-3 lg:gap-4">
-              <div className="relative h-10 w-10 lg:h-14 lg:w-14 rounded-full ring-2 ring-amber-200/80 shadow-lg overflow-hidden bg-white/10">
+              <div className="relative h-10 w-10 lg:h-14 lg:w-14 rounded-full ring-2 ring-red-300/80 shadow-lg overflow-hidden bg-white/10">
                 <img
                   src={BSK_HERO.src}
                   alt={BSK_HERO.alt}
@@ -150,10 +150,10 @@ const Layout = () => {
 
               <div className="flex flex-col items-start justify-start text-left leading-tight">
                 <h1 className="text-base lg:text-2xl font-heading font-bold text-white tracking-wider uppercase drop-shadow-md">
-                  BSK WATCH
+                  IRAQ WATCH
                 </h1>
-                <span className="hidden sm:block text-[9px] lg:text-[10px] text-amber-100 font-medium tracking-widest uppercase drop-shadow">
-                  Shri Bandi Sanjay Kumar · MP Karimnagar · BJP Telangana
+                <span className="hidden sm:block text-[9px] lg:text-[10px] text-red-100 font-medium tracking-widest uppercase drop-shadow">
+                  Iraq · Social Media Intelligence Platform
                 </span>
               </div>
             </div>
@@ -166,10 +166,10 @@ const Layout = () => {
                 <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75 animate-ping" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-white">Live · Karimnagar</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-white">Live · Baghdad</span>
             </div>
 
-            <img src="/Logo.png" alt="BJP Logo" className="h-8 lg:h-10 w-auto object-contain" />
+            <img src="/Logo.png" alt="Iraq Watch Logo" className="h-8 lg:h-10 w-auto object-contain" />
 
             <div className="hidden sm:block h-6 lg:h-8 w-px bg-white/20"></div>
 
@@ -211,7 +211,7 @@ const Layout = () => {
                 <div className="text-xs lg:text-sm font-semibold text-white truncate max-w-[120px] lg:max-w-none">
                   {user?.full_name}
                 </div>
-                <div className="text-[10px] lg:text-xs text-amber-100 font-medium uppercase tracking-wide">
+                <div className="text-[10px] lg:text-xs text-red-100 font-medium uppercase tracking-wide">
                   {user?.role}
                 </div>
               </div>
@@ -231,7 +231,7 @@ const Layout = () => {
       </header>
 
       <aside
-        className={`fixed top-16 lg:top-20 left-0 bottom-0 w-[82px] bg-gradient-to-b from-orange-700 via-orange-600 to-amber-500 shadow-xl z-40 transform transition-transform duration-300 ease-in-out select-none ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed top-16 lg:top-20 left-0 bottom-0 w-[82px] bg-gradient-to-b from-[#1a1a1a] via-[#CE1126] to-[#8B0000] shadow-xl z-40 transform transition-transform duration-300 ease-in-out select-none ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
         data-testid="sidebar"
         role="navigation"
         aria-label="Main navigation"

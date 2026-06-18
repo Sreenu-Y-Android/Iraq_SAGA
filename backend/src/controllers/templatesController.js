@@ -278,11 +278,11 @@ const generateTemplate = async (req, res) => {
             RISK_LEVEL: alert.risk_level?.toUpperCase() || '',
             IS_REPOST: (alert.is_repost || content.is_repost) ? 'Yes' : 'No',
             ALERT_DESCRIPTION: alert.description || alert.title || '',
-            DEPARTMENT_NAME: settings?.police_department_name || 'IT Cell, Hyderabad',
-            GOVERNMENT_NAME: settings?.government_name || 'Government of Telangana',
-            SUBJECT: `NOTICE: U/Sec: 69(A) & 79(3) Information Technology Amendment Act 2008 and 94 BNSS of India. (Cr.No ${report.serial_number?.split(' ')[0] || '11/2026'}, U/Sec ${sectionsFullList} of BNS of IT Cell, Hyderabad City)`,
+            DEPARTMENT_NAME: settings?.police_department_name || 'Iraq Watch Intelligence Center, Baghdad',
+            GOVERNMENT_NAME: settings?.government_name || 'Republic of Iraq',
+            SUBJECT: `NOTICE: Iraq Watch Intelligence Report — Case No. ${report.serial_number?.split(' ')[0] || '11/2026'}, U/Sec ${sectionsFullList} — Iraq Watch Intelligence Center, Baghdad`,
             RECIPIENT_BLOCK: `${platformData.operator}\nc/o Trust & Safety - Legal Policy\n${platformData.name === 'X' ? '1355 Market Street, Suite 900\nSan Francisco, CA 94103' : '1601 Willow Road\nMenlo Park, CA 94025'}`,
-            SIGNATURE_BLOCK: `Inspector of Police,\nIT Cell, Hyderabad\nTELANGANA.`
+            SIGNATURE_BLOCK: `Intelligence Officer,\nIraq Watch Intelligence Center\nBAGHDAD, IRAQ.`
         };
 
         // Interpolate template

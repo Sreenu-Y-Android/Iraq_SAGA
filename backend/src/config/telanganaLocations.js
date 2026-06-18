@@ -1,260 +1,168 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║     TELANGANA LOCATION DATABASE — BSK WATCH GEO DETECTION LAYER        ║
+ * ║     IRAQ LOCATION DATABASE — IRAQ WATCH GEO DETECTION LAYER            ║
  * ╠═══════════════════════════════════════════════════════════════════════════╣
- * ║  Districts, Lok Sabha PCs, Assembly Constituencies and major towns of   ║
- * ║  Telangana, India — with deeper coverage of Karimnagar Lok Sabha PC   ║
- * ║  (Shri Bandi Sanjay Kumar's seat).                                       ║
+ * ║  Governorates, districts, and major cities of Iraq —                    ║
+ * ║  with deeper coverage of Baghdad and key conflict/political zones.       ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
+ *
+ * NOTE: Export names are kept as ALL_TELANGANA_LOCATIONS / isTelanganaLocation
+ * for backward compatibility with existing imports (grievanceService, controllers).
  */
 
-// ─── 33 DISTRICTS OF TELANGANA ──────────────────────────────────────────────
-const TELANGANA_DISTRICTS = [
-    'adilabad', 'bhadradri kothagudem', 'bhadradri', 'kothagudem',
-    'hanamkonda', 'hyderabad', 'jagtial', 'jangaon',
-    'jayashankar bhupalpally', 'bhupalpally', 'jogulamba gadwal', 'gadwal',
-    'kamareddy', 'karimnagar', 'khammam',
-    'kumuram bheem asifabad', 'komaram bheem asifabad', 'asifabad',
-    'mahabubabad', 'mahbubnagar', 'mancherial', 'medak',
-    'medchal-malkajgiri', 'medchal malkajgiri', 'medchal', 'malkajgiri',
-    'mulugu', 'nagarkurnool', 'nalgonda', 'narayanpet', 'nirmal',
-    'nizamabad', 'peddapalli', 'rajanna sircilla', 'sircilla',
-    'rangareddy', 'sangareddy', 'siddipet', 'suryapet',
-    'vikarabad', 'wanaparthy', 'warangal', 'warangal urban', 'warangal rural',
-    'yadadri bhuvanagiri', 'yadadri', 'bhuvanagiri'
+// ─── 18 GOVERNORATES OF IRAQ ────────────────────────────────────────────────
+const IRAQ_GOVERNORATES = [
+    'baghdad', 'basra', 'nineveh', 'mosul', 'erbil', 'arbil',
+    'sulaymaniyah', 'sulaimani', 'kirkuk', 'tameem',
+    'anbar', 'ramadi', 'fallujah',
+    'diyala', 'baquba',
+    'saladin', 'tikrit', 'samarra',
+    'babil', 'babylon', 'hillah',
+    'najaf', 'karbala',
+    'qadisiyyah', 'diwaniyah',
+    'muthanna', 'samawah',
+    'thi qar', 'dhi qar', 'nasiriyah',
+    'wasit', 'kut',
+    'maysan', 'amara',
+    'dohuk', 'dahuk',
+    'halabja',
 ];
 
-// ─── 119 ASSEMBLY CONSTITUENCIES OF TELANGANA ───────────────────────────────
-const TELANGANA_CONSTITUENCIES = [
-    // ─── Karimnagar Lok Sabha PC (BSK's seat) ─────────────────────
-    'karimnagar', 'choppadandi', 'vemulawada', 'sircilla',
-    'manakondur', 'husnabad', 'huzurabad',
+// ─── MAJOR CITIES AND DISTRICTS ─────────────────────────────────────────────
+const IRAQ_CITIES = [
+    // Baghdad
+    'baghdad', 'sadr city', 'kadhimiya', 'kadhimiyah', 'adhamiya',
+    'rusafa', 'karkh', 'mansour', 'karrada', 'dora', 'abu ghraib',
+    'taji', 'mahmoudiya', 'latifiya',
 
-    // ─── Peddapalli PC ────────────────────────────────────────────
-    'peddapalli', 'dharmapuri', 'ramagundam', 'manthani', 'chennur',
-    'bellampalli', 'mancherial',
+    // Basra
+    'basra', 'basra city', 'zubayr', 'qurna', 'shatt al-arab', 'fao',
+    'abadan crossing', 'hartha',
 
-    // ─── Adilabad PC ──────────────────────────────────────────────
-    'adilabad', 'boath', 'khanapur', 'mudhole', 'nirmal', 'sirpur', 'asifabad',
+    // Nineveh / Mosul
+    'mosul', 'nineveh', 'tel afar', 'sinjar', 'hamdaniya',
+    'bartella', 'nimrud', 'tal kayf',
 
-    // ─── Nizamabad PC ─────────────────────────────────────────────
-    'armoor', 'bodhan', 'jukkal', 'banswada', 'yellareddy',
-    'kamareddy', 'nizamabad urban', 'nizamabad rural', 'balkonda',
+    // Erbil / Kurdistan
+    'erbil', 'arbil', 'hawler', 'zakho', 'amadiya', 'soran', 'ranya',
 
-    // ─── Zahirabad PC ─────────────────────────────────────────────
-    'zahirabad', 'andole', 'narayankhed', 'medak', 'narsapur', 'jharasangam',
+    // Sulaymaniyah
+    'sulaymaniyah', 'sulaimani', 'halabja', 'chamchamal', 'said sadiq',
+    'penjwen',
 
-    // ─── Medak PC ─────────────────────────────────────────────────
-    'siddipet', 'gajwel', 'dubbak', 'patancheru', 'sangareddy',
+    // Dohuk
+    'dohuk', 'dahuk', 'zakho', 'amadiya', 'akre',
 
-    // ─── Malkajgiri PC ────────────────────────────────────────────
-    'malkajgiri', 'medchal', 'quthbullapur', 'kukatpally', 'uppal', 'lal bahadur nagar', 'secunderabad cantonment',
+    // Kirkuk
+    'kirkuk', 'altun kopru', 'hawija', 'dibis',
 
-    // ─── Secunderabad PC ──────────────────────────────────────────
-    'secunderabad', 'musheerabad', 'amberpet', 'khairatabad', 'jubilee hills', 'sanathnagar', 'nampally',
+    // Anbar
+    'ramadi', 'fallujah', 'haditha', 'hit', 'qaim', 'rutba',
+    'khalidiya', 'amiriyah', 'baghdadi',
 
-    // ─── Hyderabad PC ─────────────────────────────────────────────
-    'malakpet', 'karwan', 'goshamahal', 'charminar', 'chandrayangutta', 'yakutpura', 'bahadurpura',
+    // Diyala
+    'baquba', 'khanaqin', 'jalawla', 'mandali', 'muqdadiya',
 
-    // ─── Chevella PC ──────────────────────────────────────────────
-    'maheshwaram', 'rajendranagar', 'serilingampally', 'chevella', 'pargi', 'vikarabad', 'tandur',
+    // Saladin
+    'tikrit', 'samarra', 'baiji', 'shirqat', 'balad', 'tuz khurmatu',
+    'duluiyah',
 
-    // ─── Mahbubnagar PC ───────────────────────────────────────────
-    'kodangal', 'narayanpet', 'mahbubnagar', 'jadcherla', 'devarkadra', 'makthal', 'shadnagar',
+    // Babil
+    'hillah', 'musayyib', 'mahawil', 'qasim',
 
-    // ─── Nagarkurnool PC (SC) ─────────────────────────────────────
-    'nagarkurnool', 'achampet', 'kalwakurthy', 'kollapur', 'wanaparthy', 'gadwal', 'alampur',
+    // Najaf
+    'najaf', 'kufa', 'abu sukhair',
 
-    // ─── Nalgonda PC ────────────────────────────────────────────────
-    'devarakonda', 'nagarjuna sagar', 'miryalaguda', 'huzurnagar', 'nalgonda', 'munugode', 'nakrekal',
+    // Karbala
+    'karbala', 'hindiya',
 
-    // ─── Bhongir PC ───────────────────────────────────────────────
-    'bhongir', 'nakirekallu', 'tungaturthy', 'alair', 'jangaon', 'bhuvanagiri',
+    // Qadisiyyah
+    'diwaniyah', 'afak', 'hamza',
 
-    // ─── Warangal PC (SC) ─────────────────────────────────────────
-    'station ghanpur', 'palakurthi', 'parkal', 'warangal east', 'warangal west', 'wardhannapet', 'janagaon',
+    // Wasit
+    'kut', 'numaniyah', 'zubaidiyah', 'aziziyah',
 
-    // ─── Mahabubabad PC (ST) ──────────────────────────────────────
-    'dornakal', 'mahabubabad', 'narsampet', 'mulug', 'pinapaka', 'yellandu',
+    // Maysan
+    'amara', 'ali al-gharbi', 'qalat salih',
 
-    // ─── Khammam PC ───────────────────────────────────────────────
-    'khammam', 'palair', 'madhira', 'wyra', 'sathupally', 'kothagudem', 'aswaraopeta'
+    // Thi Qar
+    'nasiriyah', 'shatrah', 'rifai', 'suq al-shuyukh',
+
+    // Muthanna
+    'samawah', 'rumaitha', 'khidir',
 ];
 
-// ─── CITIES, TOWNS, MANDALS, VILLAGES ───────────────────────────────────────
-const TELANGANA_CITIES_AND_VILLAGES = [
-    // ═══════════════════════════════════
-    // MAJOR CITIES
-    // ═══════════════════════════════════
-    'hyderabad', 'secunderabad', 'warangal', 'karimnagar', 'khammam',
-    'nizamabad', 'ramagundam', 'mahbubnagar', 'nalgonda', 'adilabad',
-    'suryapet', 'siddipet', 'jagtial', 'mancherial', 'sangareddy',
-    'medak', 'miryalaguda', 'jangaon', 'kothagudem', 'bhadrachalam',
-    'kamareddy', 'mahabubabad', 'wanaparthy', 'nagarkurnool',
-    'gadwal', 'vikarabad', 'kothapeta', 'palwancha', 'bhongir',
-    'sircilla', 'rajanna sircilla', 'peddapalli', 'mulugu', 'bhupalpally',
-
-    // ═══════════════════════════════════
-    // KARIMNAGAR DISTRICT (BSK home)
-    // ═══════════════════════════════════
-    'karimnagar', 'karimnagar city', 'karimnagar rural', 'karimnagar urban',
-    'huzurabad', 'jammikunta', 'gangadhara', 'thimmapur', 'choppadandi',
-    'manakondur', 'kothapalli', 'ramadugu', 'karimnagar municipal',
-    'shankarapatnam', 'saidapur', 'chigurumamidi', 'veenavanka',
-    'elkathurthy', 'illanthakunta', 'mustabad', 'thangallapally',
-
-    // ═══════════════════════════════════
-    // RAJANNA SIRCILLA DISTRICT
-    // ═══════════════════════════════════
-    'sircilla', 'rajanna sircilla', 'vemulawada', 'gambhiraopet',
-    'konaraopeta', 'mustabad sircilla', 'ellanthakunta', 'rudrangi',
-    'boinpalli', 'thangallapally', 'yellareddypet',
-
-    // ═══════════════════════════════════
-    // SIDDIPET / HUSNABAD AREA
-    // ═══════════════════════════════════
-    'husnabad', 'siddipet', 'gajwel', 'dubbak', 'cherial',
-    'akkannapeta', 'doulthabad', 'mirdoddi', 'thoguta', 'koheda',
-    'chinnakodur', 'nangnur', 'kondapak',
-
-    // ═══════════════════════════════════
-    // HYDERABAD / GHMC
-    // ═══════════════════════════════════
-    'secunderabad', 'begumpet', 'hitec city', 'gachibowli', 'madhapur',
-    'kondapur', 'banjara hills', 'jubilee hills', 'somajiguda', 'ameerpet',
-    'sr nagar', 'kukatpally', 'miyapur', 'lb nagar', 'dilsukhnagar',
-    'uppal', 'tarnaka', 'malakpet', 'charminar', 'old city', 'mehdipatnam',
-    'tolichowki', 'attapur', 'rajendranagar', 'shamshabad', 'shamirpet',
-    'medchal', 'kompally', 'alwal', 'bowenpally', 'sanathnagar',
-
-    // ═══════════════════════════════════
-    // WARANGAL
-    // ═══════════════════════════════════
-    'warangal', 'hanamkonda', 'kazipet', 'parkal', 'narsampet',
-    'station ghanpur', 'wardhannapet', 'mahabubabad', 'thorrur',
-    'mulugu', 'eturnagaram', 'venkatapur',
-
-    // ═══════════════════════════════════
-    // KHAMMAM / BHADRADRI
-    // ═══════════════════════════════════
-    'khammam', 'kothagudem', 'bhadrachalam', 'palvancha', 'yellandu',
-    'sathupally', 'madhira', 'wyra', 'aswaraopeta', 'manuguru',
-
-    // ═══════════════════════════════════
-    // NIZAMABAD / KAMAREDDY
-    // ═══════════════════════════════════
-    'nizamabad', 'armoor', 'bodhan', 'kamareddy', 'banswada',
-    'yellareddy', 'jukkal', 'pitlam', 'gandhari', 'lingampet',
-
-    // ═══════════════════════════════════
-    // ADILABAD / NIRMAL / MANCHERIAL / ASIFABAD
-    // ═══════════════════════════════════
-    'adilabad', 'nirmal', 'khanapur', 'boath', 'mudhole',
-    'mancherial', 'bellampalli', 'chennur', 'asifabad', 'sirpur',
-    'kagaznagar', 'jainoor', 'utnoor',
-
-    // ═══════════════════════════════════
-    // JAGTIAL / PEDDAPALLI / RAMAGUNDAM
-    // ═══════════════════════════════════
-    'jagtial', 'korutla', 'dharmapuri', 'metpalli', 'mallapur',
-    'peddapalli', 'ramagundam', 'manthani', 'godavarikhani', 'sultanabad',
-
-    // ═══════════════════════════════════
-    // NALGONDA / SURYAPET / YADADRI / BHONGIR
-    // ═══════════════════════════════════
-    'nalgonda', 'miryalaguda', 'devarakonda', 'huzurnagar', 'nakrekal',
-    'munugode', 'suryapet', 'kodad', 'thungathurthi',
-    'bhongir', 'bhuvanagiri', 'yadadri', 'alair', 'choutuppal',
-    'nagarjuna sagar',
-
-    // ═══════════════════════════════════
-    // MAHBUBNAGAR / NAGARKURNOOL / WANAPARTHY / GADWAL / NARAYANPET / VIKARABAD
-    // ═══════════════════════════════════
-    'mahbubnagar', 'jadcherla', 'shadnagar', 'devarkadra', 'makthal',
-    'nagarkurnool', 'achampet', 'kalwakurthy', 'kollapur',
-    'wanaparthy', 'gadwal', 'alampur', 'aiza', 'maldakal',
-    'narayanpet', 'kodangal', 'vikarabad', 'tandur', 'pargi',
-
-    // ═══════════════════════════════════
-    // SANGAREDDY / MEDAK / ZAHIRABAD / SIDDIPET (greater)
-    // ═══════════════════════════════════
-    'sangareddy', 'patancheru', 'medak', 'narsapur', 'zahirabad',
-    'andole', 'narayankhed', 'jharasangam',
-
-    // ═══════════════════════════════════
-    // RANGAREDDY / MEDCHAL-MALKAJGIRI
-    // ═══════════════════════════════════
-    'rangareddy', 'maheshwaram', 'ibrahimpatnam', 'hayathnagar',
-    'medchal', 'malkajgiri', 'quthbullapur', 'serilingampally',
-    'lb nagar', 'lal bahadur nagar', 'shamshabad',
-
-    // ═══════════════════════════════════
-    // BSK / BJP TELANGANA ASSOCIATION KEYWORDS
-    // ═══════════════════════════════════
-    'bandi sanjay', 'bandi sanjay kumar', 'bsk', 'bjp karimnagar',
-    'bjp telangana', 'sanjay anna', 'karimnagar lok sabha',
-    'union minister bandi sanjay', 'minister bandi sanjay',
-
-    // ═══════════════════════════════════
-    // STATE REFERENCES
-    // ═══════════════════════════════════
-    'telangana', 'state of telangana', 'govt of telangana',
-    'government of telangana', 'telangana state', 'ts'
-];
-
-const ALL_TELANGANA_LOCATIONS = new Set();
-
-const addToSet = (arr) => {
-    for (const item of arr) {
-        const lower = item.toLowerCase().trim();
-        if (lower) ALL_TELANGANA_LOCATIONS.add(lower);
-    }
-};
-
-addToSet(TELANGANA_DISTRICTS);
-addToSet(TELANGANA_CONSTITUENCIES);
-addToSet(TELANGANA_CITIES_AND_VILLAGES);
-
-// Cross-border / unrelated terms to never treat as Telangana locations
-const PAKISTAN_EXCLUSION_TERMS = [
-    'pakistan', 'lahore', 'faisalabad', 'rawalpindi', 'islamabad',
-    'gujranwala', 'multan', 'peshawar', 'karachi', 'quetta'
-];
+// ─── FLAT COMBINED LIST (used for keyword detection) ────────────────────────
+const ALL_TELANGANA_LOCATIONS = [...new Set([...IRAQ_GOVERNORATES, ...IRAQ_CITIES])];
 
 /**
- * Check if a location name matches the Telangana location database.
+ * Returns true if the text token matches any known Iraq location.
+ * (Function name kept as isTelanganaLocation for backward-compat imports.)
  */
-const isTelanganaLocation = (name) => {
-    if (!name || typeof name !== 'string') return false;
-    const lower = name.toLowerCase().trim();
+const isTelanganaLocation = (token) => {
+    if (!token) return false;
+    const t = String(token).toLowerCase().trim();
+    return ALL_TELANGANA_LOCATIONS.some(loc => t.includes(loc) || loc.includes(t));
+};
 
-    if (PAKISTAN_EXCLUSION_TERMS.some(term => lower.includes(term))) return false;
+// ─── GOVERNORATE-LEVEL LOOKUP (uppercase for GeoJSON DIST_NAME matching) ────
+const IRAQ_GOVERNORATE_MAP = {
+    'baghdad': 'BAGHDAD',
+    'sadr city': 'BAGHDAD', 'kadhimiya': 'BAGHDAD', 'adhamiya': 'BAGHDAD',
+    'rusafa': 'BAGHDAD', 'karkh': 'BAGHDAD', 'mansour': 'BAGHDAD',
+    'karrada': 'BAGHDAD', 'dora': 'BAGHDAD', 'abu ghraib': 'BAGHDAD',
+    'taji': 'BAGHDAD', 'mahmoudiya': 'BAGHDAD',
 
-    if (ALL_TELANGANA_LOCATIONS.has(lower)) return true;
-    // Substring fallback for major Telangana anchors
-    if (lower.includes('telangana')) return true;
-    if (lower.includes('hyderabad')) return true;
-    if (lower.includes('karimnagar')) return true;
-    if (lower.includes('warangal')) return true;
-    if (lower.includes('khammam')) return true;
-    if (lower.includes('nizamabad')) return true;
-    if (lower.includes('mahbubnagar')) return true;
-    if (lower.includes('nalgonda')) return true;
-    if (lower.includes('sircilla')) return true;
-    if (lower.includes('adilabad')) return true;
-    if (lower.includes('jagtial')) return true;
-    if (lower.includes('peddapalli')) return true;
-    if (lower.includes('siddipet')) return true;
-    if (lower.includes('sangareddy')) return true;
-    if (lower.includes('medchal')) return true;
-    if (lower.includes('rangareddy')) return true;
-    return false;
+    'basra': 'BASRA',
+    'zubayr': 'BASRA', 'qurna': 'BASRA', 'fao': 'BASRA', 'hartha': 'BASRA',
+
+    'mosul': 'NINEVEH', 'nineveh': 'NINEVEH',
+    'tel afar': 'NINEVEH', 'sinjar': 'NINEVEH', 'hamdaniya': 'NINEVEH',
+    'bartella': 'NINEVEH', 'nimrud': 'NINEVEH',
+
+    'erbil': 'ERBIL', 'arbil': 'ERBIL', 'hawler': 'ERBIL',
+    'soran': 'ERBIL', 'ranya': 'ERBIL',
+
+    'sulaymaniyah': 'SULAYMANIYAH', 'sulaimani': 'SULAYMANIYAH',
+    'halabja': 'HALABJA', 'chamchamal': 'SULAYMANIYAH',
+
+    'dohuk': 'DOHUK', 'dahuk': 'DOHUK', 'zakho': 'DOHUK',
+    'amadiya': 'DOHUK', 'akre': 'DOHUK',
+
+    'kirkuk': 'KIRKUK', 'altun kopru': 'KIRKUK', 'hawija': 'KIRKUK',
+
+    'ramadi': 'ANBAR', 'fallujah': 'ANBAR', 'anbar': 'ANBAR',
+    'haditha': 'ANBAR', 'hit': 'ANBAR', 'qaim': 'ANBAR',
+    'rutba': 'ANBAR', 'khalidiya': 'ANBAR',
+
+    'baquba': 'DIYALA', 'diyala': 'DIYALA',
+    'khanaqin': 'DIYALA', 'jalawla': 'DIYALA', 'muqdadiya': 'DIYALA',
+
+    'tikrit': 'SALADIN', 'saladin': 'SALADIN',
+    'samarra': 'SALADIN', 'baiji': 'SALADIN', 'balad': 'SALADIN',
+
+    'hillah': 'BABIL', 'babylon': 'BABIL', 'babil': 'BABIL',
+    'musayyib': 'BABIL',
+
+    'najaf': 'NAJAF', 'kufa': 'NAJAF',
+    'karbala': 'KARBALA', 'hindiya': 'KARBALA',
+
+    'diwaniyah': 'QADISIYYAH', 'qadisiyyah': 'QADISIYYAH',
+
+    'kut': 'WASIT', 'wasit': 'WASIT', 'numaniyah': 'WASIT',
+
+    'amara': 'MAYSAN', 'maysan': 'MAYSAN',
+
+    'nasiriyah': 'DHI QAR', 'thi qar': 'DHI QAR', 'dhi qar': 'DHI QAR',
+    'shatrah': 'DHI QAR',
+
+    'samawah': 'MUTHANNA', 'muthanna': 'MUTHANNA',
 };
 
 module.exports = {
-    TELANGANA_DISTRICTS,
-    TELANGANA_CONSTITUENCIES,
-    TELANGANA_CITIES_AND_VILLAGES,
     ALL_TELANGANA_LOCATIONS,
-    isTelanganaLocation
+    isTelanganaLocation,
+    IRAQ_GOVERNORATES,
+    IRAQ_CITIES,
+    IRAQ_GOVERNORATE_MAP,
 };

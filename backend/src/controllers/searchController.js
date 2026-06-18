@@ -464,7 +464,7 @@ const glanceSearch = async (req, res) => {
 
                 switch (type) {
                     case 'greetings':
-                        response = `## Hello!\n\nAsk me about **Telangana police/politics** from social media (e.g., \"Telangana police issues last 24h\").`;
+                        response = `## Hello!\n\nAsk me about **Iraq politics/security** from social media (e.g., \"Baghdad security last 24h\").`;
                         break;
                     case 'howAreYou':
                         response = `## I'm doing great! 🚀\n\nThanks for asking! I'm fully operational and ready to help you explore the world of information.\n\n**What can I help you with today?**\n- Search any topic across social platforms\n- Get real-time news analysis\n- Track trending discussions`;
@@ -536,15 +536,16 @@ const glanceSearch = async (req, res) => {
             'chandigarh': 'chandigarh', 'chandighar': 'chandigarh',
             'vizag': 'visakhapatnam', 'vishakha': 'visakhapatnam',
             'vijawada': 'vijayawada', 'bezawada': 'vijayawada',
-            // States (expanded)
-            'andhrapradesh': 'andhra pradesh', 'ap': 'andhra pradesh', 'andhra': 'andhra pradesh',
-            'telangana': 'telangana', 'telengana': 'telangana', 'ts': 'telangana', 'telegana': 'telangana',
-            'tamilnadu': 'tamil nadu', 'tn': 'tamil nadu',
-            'karnataka': 'karnataka', 'karnatak': 'karnataka', 'ka': 'karnataka',
-            'maharashtra': 'maharashtra', 'maharastra': 'maharashtra', 'mh': 'maharashtra',
-            'uttarpradesh': 'uttar pradesh', 'up': 'uttar pradesh',
-            'gujrat': 'gujarat', 'gujrath': 'gujarat',
-            'rajastan': 'rajasthan', 'rajsthan': 'rajasthan',
+            // Iraq governorates / regions
+            'irak': 'iraq', 'irq': 'iraq',
+            'bagdad': 'baghdad', 'bagdhad': 'baghdad', 'baghdad city': 'baghdad',
+            'mosul': 'mosul', 'mousel': 'mosul',
+            'basrah': 'basra', 'al-basra': 'basra',
+            'erbil': 'erbil', 'arbil': 'erbil', 'hewler': 'erbil',
+            'sulaimaniya': 'sulaymaniyah', 'slemani': 'sulaymaniyah',
+            'kirkuk': 'kirkuk', 'kerkuk': 'kirkuk',
+            'najaf': 'najaf', 'al-najaf': 'najaf',
+            'karbala': 'karbala', 'kerbala': 'karbala',
             // Political terms (expanded)
             'politcal': 'political', 'politcial': 'political', 'politic': 'political', 'politicl': 'political',
             'goverment': 'government', 'govt': 'government', 'governement': 'government', 'govrnment': 'government',
@@ -552,7 +553,7 @@ const glanceSearch = async (req, res) => {
             'electon': 'election', 'elction': 'election', 'electoin': 'election',
             'minsiter': 'minister', 'ministor': 'minister', 'miniser': 'minister',
             'cheif': 'chief', 'cheaf': 'chief', 'chif': 'chief',
-            'congres': 'congress', 'trs': 'brs',
+            'pmf': 'pmf', 'hashd': 'hashd al-shaabi',
             // Common typos
             'reltated': 'related', 'realted': 'related', 'relted': 'related',
             'trnding': 'trending', 'treding': 'trending', 'trendng': 'trending',
@@ -562,9 +563,9 @@ const glanceSearch = async (req, res) => {
         };
 
         // Known keywords for fuzzy matching unknown words
-        const knownKeywords = ['hyderabad', 'bangalore', 'mumbai', 'chennai', 'delhi', 'kolkata', 'pune', 'jaipur',
-            'telangana', 'andhra', 'karnataka', 'maharashtra', 'tamil', 'kerala', 'gujarat', 'rajasthan',
-            'political', 'government', 'parliament', 'election', 'minister', 'chief', 'police', 'congress', 'bjp',
+        const knownKeywords = ['baghdad', 'basra', 'mosul', 'erbil', 'kirkuk', 'najaf', 'karbala', 'sulaymaniyah',
+            'iraq', 'iraqi', 'iran', 'syria', 'kurdish', 'pmf', 'isis', 'daesh',
+            'political', 'government', 'parliament', 'election', 'minister', 'security', 'police',
             'trending', 'latest', 'breaking', 'news', 'update', 'analysis'];
 
         // Levenshtein distance for fuzzy matching
@@ -642,12 +643,12 @@ const glanceSearch = async (req, res) => {
             }
         }
 
-        // LOCATION PRIORITIZATION: Default to Hyderabad/Telangana if no specific location context
+        // LOCATION PRIORITIZATION: Default to Baghdad/Iraq if no specific location context
         // This ensures broad queries are scoped to our operational area.
         const knownLocations = [
-            'hyderabad', 'hyd', 'telangana', 'ts', 'secunderabad', 'cyberabad',
-            'india', 'indian', 'delhi', 'mumbai', 'bangalore', 'chennai', 'andhra pradesh', 'kolkata', 'pune', 'jaipur',
-            'us', 'usa', 'america', 'uk', 'london', 'china', 'japan', 'germany', 'france', 'europe', 'africa', 'australia', 'russia',
+            'iraq', 'iraqi', 'baghdad', 'basra', 'mosul', 'erbil', 'kirkuk', 'najaf', 'karbala',
+            'sulaymaniyah', 'dohuk', 'anbar', 'diyala', 'saladin', 'kurdistan',
+            'us', 'usa', 'america', 'uk', 'iran', 'syria', 'turkey', 'saudi',
             'global', 'world', 'international'
         ];
 
@@ -655,8 +656,8 @@ const glanceSearch = async (req, res) => {
         const hasLocation = knownLocations.some(loc => lowerOptimized.includes(loc));
 
         if (!hasLocation) {
-            console.log(`[Glance] No location detected in "${optimizedQuery}". Prioritizing Hyderabad/Telangana.`);
-            optimizedQuery += ' Hyderabad Telangana';
+            console.log(`[Glance] No location detected in "${optimizedQuery}". Prioritizing Baghdad/Iraq.`);
+            optimizedQuery += ' Baghdad Iraq';
         }
 
         const searchStartTime = Date.now();
@@ -755,11 +756,11 @@ const glanceSearch = async (req, res) => {
             .limit(500)
             .lean();
 
-        // Scope filter: Telangana-only focus (primary), police + politics/government (primary).
-        const topicRegex = /\b(police|ts\s*police|dgp|commissioner|fir|arrest|detain|detention|raid|crime|murder|assault|rape|molest|kidnap|law\s*and\s*order|public\s*safety|security|traffic|enforcement|checkpoint|protest|rally|stone\s*pelting|clash|communal|riot|court|hc|high\s*court|sc|supreme\s*court|bail|sit|ed|cbi|acb|vigilance|ghmc|collector|rdo|tahsildar|minister|mla|mp|cm|chief\s*minister|governor|cabinet|budget|assembly|parliament|election|polls|by\s*election|vote|evm|bjp|congress|brs|trs|aimim|kcr|revanth|owaisi|k\s*chandrashekar|revanth\s*reddy|hy\s*draa|hydraa|water|power|electricity|road|transport|metro|bus|rtc|drainage|flood|rain|weather|pollution|health|hospital|school|college|education|university|jobs|employment|student|farmer|agriculture)\b/i;
+        // Scope filter: Iraq-only focus (primary), security + politics/government (primary).
+        const topicRegex = /\b(police|security|military|army|arrest|detain|raid|crime|murder|attack|bombing|kidnap|law\s*and\s*order|public\s*safety|enforcement|checkpoint|protest|rally|clash|riot|court|bail|minister|prime\s*minister|president|governor|cabinet|budget|parliament|election|polls|vote|pmf|isis|daesh|hashd|militia|airstrike|water|power|electricity|road|transport|flood|rain|health|hospital|oil|economy|jobs|unemployment|corruption|farmer|agriculture)\b/i;
 
-        // Telangana signals: state + Hyderabad + major districts/areas.
-        const locRegex = /\b(telangana|hyderabad|hydera?bad|hyd|secunderabad|cyberabad|hitech\s*city|gachibowli|madhapur|kukatpally|uppal|lb\s*nagar|charminar|old\s*city|warangal|hanamkonda|nizamabad|karimnagar|khammam|nalgonda|suryapet|mahabubnagar|mahbubnagar|nagarkurnool|medak|siddipet|sangareddy|adilabad|mancherial|nirmal|jagtial|peddapalli|bhupalpally|mulugu|kothagudem|bhadradri|rajanna|sircilla|vikarabad|yadadri|bhongir|mahabubabad|jangaon|wanaparthy|narayanpet|komaram\s*bheem|asifabad|kamareddy|ranga\s*reddy|rangareddy|medchal|malkajgiri)\b/i;
+        // Iraq signals: country + Baghdad + major governorates/cities.
+        const locRegex = /\b(iraq|iraqi|baghdad|basra|mosul|nineveh|erbil|arbil|sulaymaniyah|dohuk|kirkuk|anbar|ramadi|fallujah|diyala|baquba|saladin|tikrit|samarra|babil|hillah|najaf|karbala|qadisiyyah|diwaniyah|wasit|kut|maysan|amarah|thi\s*qar|nasiriyah|muthanna|samawah|sadr\s*city|kadhimiya|adhamiya|kurdistan|krg|kurdish)\b/i;
         let docs = Array.isArray(docsRaw) ? docsRaw : [];
         const scoped = docs
             .filter(d => locRegex.test(d.text || '') || locRegex.test(d.scraped_content || '') || locRegex.test(d.author_handle || '') || locRegex.test(d.content_url || ''))

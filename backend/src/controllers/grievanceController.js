@@ -288,12 +288,12 @@ const buildListQuery = (params = {}, options = {}) => {
         }
     }
 
-    // ─── BSK relevance filter ────────────────────────────────────────────
-    // Mentions feed should only show content actually about Bandi Sanjay
-    // Kumar / his son / BJP Telangana machinery. We enforce this at query
-    // time so anything ingested by legacy paths (keyword sweeps, manual
-    // imports, WhatsApp) is filtered out unless it mentions a hard BSK
-    // token. Pass `bsk_only=false` explicitly to opt out (admin / audit).
+    // ─── Iraq relevance filter ───────────────────────────────────────────
+    // Mentions feed should only show content actually about Iraq — its
+    // politics, security, and key figures. We enforce this at query time
+    // so anything ingested by legacy paths (keyword sweeps, manual
+    // imports) is filtered out unless it mentions a hard Iraq token.
+    // Pass `bsk_only=false` explicitly to opt out (admin / audit).
     const bskOnly = String(params.bsk_only ?? 'true').toLowerCase() !== 'false';
     if (bskOnly) {
         const { HARD_BSK_TOKENS } = require('../services/bskRelevanceFilterService');
@@ -327,7 +327,7 @@ const buildListQuery = (params = {}, options = {}) => {
 };
 
 /**
- * Reusable BSK-relevance `$match` clause for raw aggregations. Mirrors the
+ * Reusable Iraq-relevance `$match` clause for raw aggregations. Mirrors the
  * filter enforced by `buildListQuery` so that stats endpoints (which build
  * their own pipelines) count the same universe of rows that the list
  * endpoint returns. Returns an empty object when `bsk_only` is explicitly
@@ -1441,8 +1441,8 @@ const getStats = async (req, res) => {
 
 const getDashboardStats = async (req, res) => {
     try {
-        // Cache key reflects the BSK filter so toggling it returns the right
-        // bucket. Default cache key = bsk_only=true.
+        // Cache key reflects the Iraq relevance filter so toggling it returns the right
+        // bucket. Default cache key = bsk_only=true (Iraq-relevant only).
         const bskOnly = String(req.query.bsk_only ?? 'true').toLowerCase() !== 'false';
         const cacheKey = `grievances:dashboard:v1:bsk=${bskOnly}`;
         const cached = await cacheService.get(cacheKey);
@@ -1889,39 +1889,32 @@ const getMapGrievances = async (req, res) => {
         const { days = 365, scope = 'all' } = req.query;
         const since = new Date();
         since.setDate(since.getDate() - parseInt(days));
-        const karimnagarScope = ['sangrur', 'karimnagar'].includes(String(scope || '').toLowerCase());
+        const karimnagarScope = ['baghdad', 'karimnagar'].includes(String(scope || '').toLowerCase());
 
-        // Karimnagar Lok Sabha PC assembly segments
-        const karimnagarAcKeywords = ['karimnagar', 'choppadandi', 'vemulawada', 'sircilla', 'manakondur', 'husnabad', 'huzurabad'];
+        // Baghdad key zone segments
+        const karimnagarAcKeywords = ['baghdad', 'sadr city', 'kadhimiya', 'adhamiya', 'rusafa', 'karkh', 'mansour'];
         const acAliasMap = {
-            'karimnagar': 'karimnagar',
-            'karimnagar city': 'karimnagar',
-            'karimnagar urban': 'karimnagar',
-            'karimnagar rural': 'karimnagar',
-            'choppadandi': 'choppadandi',
-            'choppadandi (sc)': 'choppadandi',
-            'vemulawada': 'vemulawada',
-            'sircilla': 'sircilla',
-            'rajanna sircilla': 'sircilla',
-            'manakondur': 'manakondur',
-            'manakondur (sc)': 'manakondur',
-            'thimmapur': 'manakondur',
-            'husnabad': 'husnabad',
-            'huzurabad': 'huzurabad',
-            'jammikunta': 'huzurabad'
+            'baghdad': 'baghdad',
+            'baghdad city': 'baghdad',
+            'baghdad central': 'baghdad',
+            'sadr city': 'sadr city',
+            'al-sadr': 'sadr city',
+            'kadhimiya': 'kadhimiya',
+            'adhamiya': 'adhamiya',
+            'rusafa': 'rusafa',
+            'karkh': 'karkh',
+            'mansour': 'mansour',
+            'al-mansour': 'mansour'
         };
 
-        // All Telangana location keywords (mirror of frontend CITY_TO_AC + CITY_TO_DISTRICT keys)
+        // All Iraq governorate keywords
         const allLocationKeywords = [
-            'karimnagar', 'choppadandi', 'vemulawada', 'sircilla', 'rajanna sircilla',
-            'manakondur', 'husnabad', 'huzurabad', 'jammikunta', 'thimmapur',
-            'hyderabad', 'secunderabad', 'rangareddy', 'medchal', 'malkajgiri',
-            'warangal', 'hanamkonda', 'khammam', 'kothagudem', 'bhadrachalam',
-            'nizamabad', 'kamareddy', 'mahbubnagar', 'nalgonda', 'suryapet',
-            'siddipet', 'sangareddy', 'medak', 'adilabad', 'nirmal',
-            'mancherial', 'asifabad', 'mahabubabad', 'jangaon', 'bhupalpally',
-            'wanaparthy', 'nagarkurnool', 'gadwal', 'vikarabad', 'narayanpet',
-            'mulugu', 'yadadri', 'bhuvanagiri', 'jagtial', 'peddapalli'
+            'baghdad', 'basra', 'nineveh', 'mosul', 'erbil', 'sulaymaniyah',
+            'dohuk', 'halabja', 'kirkuk', 'anbar', 'ramadi', 'fallujah',
+            'diyala', 'baquba', 'saladin', 'tikrit', 'samarra',
+            'babil', 'hillah', 'najaf', 'karbala', 'qadisiyyah', 'diwaniyah',
+            'wasit', 'kut', 'maysan', 'amarah', 'thi qar', 'nasiriyah',
+            'muthanna', 'samawah'
         ];
         const locationKeywords = karimnagarScope ? karimnagarAcKeywords : allLocationKeywords;
 
@@ -1933,9 +1926,9 @@ const getMapGrievances = async (req, res) => {
                 is_active: true,
                 post_date: { $gte: since },
                 $or: [
-                    { 'detected_location.city': /karimnagar|choppadandi|vemulawada|sircilla|manakondur|husnabad|huzurabad/i },
-                    { 'detected_location.district': /karimnagar|rajanna sircilla|siddipet|jagtial|peddapalli/i },
-                    { 'detected_location.constituency': /karimnagar|choppadandi|vemulawada|sircilla|manakondur|husnabad|huzurabad/i }
+                    { 'detected_location.city': /baghdad|sadr city|kadhimiya|adhamiya|rusafa|karkh|mansour/i },
+                    { 'detected_location.district': /baghdad|basra|nineveh|kirkuk|erbil/i },
+                    { 'detected_location.constituency': /baghdad|sadr city|kadhimiya|adhamiya|rusafa|karkh|mansour/i }
                 ]
             }
             : {
@@ -1943,7 +1936,7 @@ const getMapGrievances = async (req, res) => {
                 post_date: { $gte: since }
             };
 
-        // Strict Karimnagar-only tagged aggregation (no keyword scanning).
+        // Strict Baghdad-only tagged aggregation (no keyword scanning).
         if (karimnagarScope) {
             const rows = await Grievance.aggregate([
                 { $match: baseMatch },

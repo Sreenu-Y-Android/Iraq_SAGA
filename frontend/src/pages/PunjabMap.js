@@ -9,11 +9,10 @@ import { Loader2, TrendingUp, TrendingDown, Minus, BarChart3, Tag } from 'lucide
 import { cn } from '../lib/utils';
 import { BSK_HERO, LOCAL_FALLBACK } from '../config/bskMedia';
 
-// BSK is MP from Karimnagar Lok Sabha Constituency in Telangana.
-// Constant name kept (SANGRUR_PC) for compatibility with existing code paths,
-// but value is now KARIMNAGAR — every reference is logically "BSK's PC".
-const SANGRUR_PC = 'KARIMNAGAR';
-const BSK_PC_DISPLAY = 'Karimnagar';
+// Iraq Watch — Baghdad Governorate is the primary focus region.
+// Constant name kept (SANGRUR_PC) for compatibility with existing code paths.
+const SANGRUR_PC = 'BAGHDAD';
+const BSK_PC_DISPLAY = 'Baghdad';
 
 const TOPIC_STYLES = {
   'Political Criticism': 'bg-purple-50 text-purple-700 ring-purple-200',
@@ -53,8 +52,8 @@ const canonicalizeTopic = (value) => {
 
 const getTopicStyle = (topic) => TOPIC_STYLES[canonicalizeTopic(topic)] || 'bg-teal-50 text-teal-700 ring-teal-200';
 
-// Assembly segments inside Karimnagar Lok Sabha PC (BSK's MP seat)
-const AC_NAMES = ['Karimnagar', 'Choppadandi (SC)', 'Vemulawada', 'Sircilla', 'Manakondur (SC)', 'Husnabad', 'Huzurabad'];
+// Baghdad zone districts used for sub-governorate mapping
+const AC_NAMES = ['Baghdad', 'Sadr City', 'Kadhimiya', 'Adhamiya', 'Rusafa', 'Karkh', 'Mansour'];
 
 const SENTIMENT_TIERS = {
   high:    { fill: '#15803d', hover: '#166534', stroke: '#14532d' },
@@ -89,35 +88,27 @@ const mergeTopicEntries = (entries = []) => {
   });
   return Object.entries(topicMap).sort((a, b) => b[1] - a[1]);
 };
-// City / town → Assembly segment inside Karimnagar Lok Sabha PC
+// City / town → Baghdad zone mapping
 const CITY_TO_AC = {
-  'karimnagar': 'Karimnagar', 'choppadandi': 'Choppadandi (SC)',
-  'vemulawada': 'Vemulawada', 'sircilla': 'Sircilla', 'rajanna sircilla': 'Sircilla',
-  'manakondur': 'Manakondur (SC)', 'husnabad': 'Husnabad', 'huzurabad': 'Huzurabad',
-  'thimmapur': 'Manakondur (SC)', 'jagtial': 'Karimnagar', 'peddapalli': 'Manakondur (SC)',
+  'baghdad': 'Baghdad', 'sadr city': 'Sadr City',
+  'kadhimiya': 'Kadhimiya', 'adhamiya': 'Adhamiya', 'rusafa': 'Rusafa',
+  'karkh': 'Karkh', 'mansour': 'Mansour', 'dora': 'Karkh', 'yarmouk': 'Mansour',
+  'karrada': 'Rusafa', 'new baghdad': 'Rusafa', 'zayouna': 'Rusafa',
 };
 
-// City / town → Telangana district (uppercase keys to match geojson DIST_NAME)
+// City / town → Iraq governorate (uppercase keys to match geojson)
 const CITY_TO_DISTRICT = {
-  'hyderabad': 'HYDERABAD', 'secunderabad': 'HYDERABAD', 'cyberabad': 'RANGAREDDY',
-  'rangareddy': 'RANGAREDDY', 'medchal': 'MEDCHAL-MALKAJGIRI', 'malkajgiri': 'MEDCHAL-MALKAJGIRI',
-  'karimnagar': 'KARIMNAGAR', 'jagtial': 'JAGTIAL', 'peddapalli': 'PEDDAPALLI',
-  'sircilla': 'RAJANNA SIRCILLA', 'rajanna sircilla': 'RAJANNA SIRCILLA',
-  'warangal': 'WARANGAL URBAN', 'hanamkonda': 'WARANGAL URBAN',
-  'khammam': 'KHAMMAM', 'nizamabad': 'NIZAMABAD', 'kamareddy': 'KAMAREDDY',
-  'mahbubnagar': 'MAHBUBNAGAR', 'nalgonda': 'NALGONDA', 'suryapet': 'SURYAPET',
-  'medak': 'MEDAK', 'siddipet': 'SIDDIPET', 'sangareddy': 'SANGAREDDY',
-  'adilabad': 'ADILABAD', 'nirmal': 'NIRMAL', 'mancherial': 'MANCHERIAL',
-  'asifabad': 'KUMURAM BHEEM ASIFABAD', 'bhadradri': 'BHADRADRI KOTHAGUDEM',
-  'kothagudem': 'BHADRADRI KOTHAGUDEM', 'mahabubabad': 'MAHABUBABAD',
-  'jangaon': 'JANGAON', 'jayashankar': 'JAYASHANKAR BHUPALPALLY', 'bhupalpally': 'JAYASHANKAR BHUPALPALLY',
-  'wanaparthy': 'WANAPARTHY', 'nagarkurnool': 'NAGARKURNOOL', 'jogulamba': 'JOGULAMBA GADWAL',
-  'gadwal': 'JOGULAMBA GADWAL', 'vikarabad': 'VIKARABAD', 'narayanpet': 'NARAYANPET',
-  'mulugu': 'MULUGU', 'yadadri': 'YADADRI BHUVANAGIRI', 'bhuvanagiri': 'YADADRI BHUVANAGIRI',
-  // Karimnagar PC assembly-level towns → Karimnagar district (BSK's seat)
-  'choppadandi': 'KARIMNAGAR', 'vemulawada': 'RAJANNA SIRCILLA',
-  'manakondur': 'KARIMNAGAR', 'husnabad': 'SIDDIPET', 'huzurabad': 'KARIMNAGAR',
-  'telangana': null,
+  'baghdad': 'BAGHDAD', 'sadr city': 'BAGHDAD', 'kadhimiya': 'BAGHDAD',
+  'adhamiya': 'BAGHDAD', 'rusafa': 'BAGHDAD', 'karkh': 'BAGHDAD', 'mansour': 'BAGHDAD',
+  'basra': 'BASRA', 'mosul': 'NINEVEH', 'nineveh': 'NINEVEH',
+  'erbil': 'ERBIL', 'sulaymaniyah': 'SULAYMANIYAH', 'dohuk': 'DOHUK',
+  'kirkuk': 'KIRKUK', 'anbar': 'ANBAR', 'ramadi': 'ANBAR', 'fallujah': 'ANBAR',
+  'diyala': 'DIYALA', 'baquba': 'DIYALA', 'saladin': 'SALADIN', 'tikrit': 'SALADIN',
+  'samarra': 'SALADIN', 'babil': 'BABIL', 'hillah': 'BABIL',
+  'najaf': 'NAJAF', 'karbala': 'KARBALA', 'qadisiyyah': 'QADISIYYAH', 'diwaniyah': 'QADISIYYAH',
+  'wasit': 'WASIT', 'kut': 'WASIT', 'maysan': 'MAYSAN', 'amarah': 'MAYSAN',
+  'thi qar': 'THI QAR', 'nasiriyah': 'THI QAR', 'muthanna': 'MUTHANNA', 'samawah': 'MUTHANNA',
+  'iraq': null,
 };
 
 /* ─── Sentiment Pie (pure SVG donut) ─── */
@@ -638,15 +629,15 @@ const PunjabMap = ({ embedded = false }) => {
             {/* Label for the blown-up region */}
             <text x={layout.labelX} y={layout.labelY}
               style={{ fontSize: '20px', fontWeight: 900, fill: '#0f172a', letterSpacing: '0.04em' }}>
-              KARIMNAGAR
+              BAGHDAD
             </text>
             <text x={layout.labelX} y={layout.labelY + 18}
               style={{ fontSize: '10px', fontWeight: 600, fill: '#475569', letterSpacing: '0.22em' }}>
-              CONSTITUENCY
+              GOVERNORATE
             </text>
           </svg>
           <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm border border-red-200 rounded-lg px-2.5 py-1.5 text-[10px] text-gray-600 shadow-sm">
-            <span className="font-bold text-red-700">Karimnagar PC · BSK</span>
+            <span className="font-bold text-red-700">Baghdad · Iraq Watch</span>
           </div>
           {hovAcName && (
             <div
@@ -661,7 +652,7 @@ const PunjabMap = ({ embedded = false }) => {
                 <div className="bg-green-600 text-white px-3 py-1.5 flex items-center justify-between">
                   <span className="font-bold text-[12px]">{hovAcName}</span>
                   <span className="text-[9px] bg-white/20 px-1.5 py-0.5 rounded">
-                    {hovAcName === 'KARIMNAGAR' ? 'BSK · Karimnagar PC' : 'District · Telangana'}
+                    {hovAcName === 'BAGHDAD' ? 'Iraq · Baghdad' : 'Governorate · Iraq'}
                   </span>
                 </div>
                 <div className="p-2.5">
@@ -737,8 +728,8 @@ const PunjabMap = ({ embedded = false }) => {
       {/* Header */}
       <div className="mb-5 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Karimnagar Constituency Overview Dashboard</h1>
-          <p className="text-xs text-orange-700 font-semibold mt-1 tracking-wide uppercase">Bandi Sanjay Kumar · Member of Parliament</p>
+          <h1 className="text-2xl font-bold text-gray-900">Iraq Intelligence Overview Dashboard</h1>
+          <p className="text-xs text-red-700 font-semibold mt-1 tracking-wide uppercase">Republic of Iraq · Intelligence Platform</p>
         </div>
         <div className="flex items-center gap-3">
           {loading && <Loader2 className="h-5 w-5 animate-spin text-gray-400" />}
@@ -754,7 +745,7 @@ const PunjabMap = ({ embedded = false }) => {
         {/* LEFT PANEL */}
         <div className="w-[340px] flex-shrink-0 space-y-4">
           
-          {/* Leader Photo — Bandi Sanjay Kumar */}
+          {/* Leader Photo — Abdul Latif Rashid */}
           <Card className="overflow-hidden border-0 shadow-lg">
             <div className="relative">
               <img
@@ -769,12 +760,12 @@ const PunjabMap = ({ embedded = false }) => {
                   e.currentTarget.src = LOCAL_FALLBACK;
                 }}
               />
-              {/* saffron gradient overlay at bottom */}
-              <div className="absolute inset-0 bg-gradient-to-t from-orange-900/90 via-orange-900/20 to-transparent" />
+              {/* red gradient overlay at bottom */}
+              <div className="absolute inset-0 bg-gradient-to-t from-red-900/90 via-red-900/20 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-4">
-                <h3 className="text-xl font-extrabold text-white leading-tight drop-shadow">Bandi Sanjay Kumar</h3>
-                <p className="text-amber-200 text-sm font-medium mt-0.5">Member of Parliament · BJP Telangana</p>
-                <span className="inline-block mt-1.5 px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-sm text-white text-[11px] font-semibold border border-white/30">MP · Karimnagar Lok Sabha</span>
+                <h3 className="text-xl font-extrabold text-white leading-tight drop-shadow">Abdul Latif Rashid</h3>
+                <p className="text-red-200 text-sm font-medium mt-0.5">President of Iraq</p>
+                <span className="inline-block mt-1.5 px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-sm text-white text-[11px] font-semibold border border-white/30">جمهورية العراق</span>
               </div>
             </div>
           </Card>
@@ -783,7 +774,7 @@ const PunjabMap = ({ embedded = false }) => {
           <Card className="p-4 border-0 shadow-md">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-sm font-semibold text-slate-700">Sentiment Analysis</h4>
-              <span className="text-[10px] font-semibold text-orange-700 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-200">Karimnagar</span>
+              <span className="text-[10px] font-semibold text-red-700 bg-red-50 px-2 py-0.5 rounded-full border border-red-200">Baghdad</span>
             </div>
             <div className="flex justify-center">
               <SentimentPie
@@ -968,10 +959,10 @@ const PunjabMap = ({ embedded = false }) => {
             </svg>
 
             {/* Summary strip */}
-            <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm border border-orange-200 rounded-lg px-3 py-2 text-[11px] text-gray-600 shadow-sm">
-              <span className="font-bold text-orange-700">Karimnagar Constituency</span>
+            <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm border border-red-200 rounded-lg px-3 py-2 text-[11px] text-gray-600 shadow-sm">
+              <span className="font-bold text-red-700">Baghdad Governorate</span>
               <div className="flex items-center gap-1 mt-0.5">
-                <span className="inline-block w-2 h-2 rounded-sm bg-orange-500" />
+                <span className="inline-block w-2 h-2 rounded-sm bg-red-500" />
                 <span className="text-[10px] text-slate-500">Hover over any district to see mention details</span>
               </div>
             </div>
@@ -1002,7 +993,7 @@ const PunjabMap = ({ embedded = false }) => {
                     )}
                   </div>
                   {districtFeatures[hoveredDistrict]?.hasSangrur && (
-                    <Badge className="bg-white/20 text-white text-[10px] border-0">BSK's Constituency</Badge>
+                    <Badge className="bg-white/20 text-white text-[10px] border-0">Baghdad · Iraq</Badge>
                   )}
                 </div>
 

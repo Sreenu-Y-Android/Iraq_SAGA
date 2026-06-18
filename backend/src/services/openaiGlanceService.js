@@ -95,7 +95,7 @@ const createSocialGlanceMarkdown = async ({
   }));
 
   const systemPrompt = `
-You are a regional news intelligence agent for Telangana and Hyderabad.
+You are a regional news intelligence agent for Iraq and Baghdad.
 
 STRICT RULES:
 - Use ONLY the provided posts.

@@ -467,7 +467,7 @@ const Grievances = () => {
     const [addTweetInput, setAddTweetInput] = useState('');
     const [addTweetLoading, setAddTweetLoading] = useState(false);
 
-    // ─── Tracked keywords (BSK auto-fetcher) ──────────────────────
+    // ─── Tracked keywords (Iraq Watch auto-fetcher) ───────────────
     const [keywordsOpen, setKeywordsOpen] = useState(false);
     const [trackedKeywords, setTrackedKeywords] = useState([]);
     const [trackedKeywordsLoading, setTrackedKeywordsLoading] = useState(false);
@@ -482,7 +482,7 @@ const Grievances = () => {
         try {
             const res = await api.get('/keywords');
             const list = Array.isArray(res.data) ? res.data : res.data?.keywords || [];
-            // Show BSK / mention-style keywords first
+            // Show high-weight / Iraq mention-style keywords first
             list.sort((a, b) => (b.weight || 0) - (a.weight || 0));
             setTrackedKeywords(list);
         } catch (err) {
@@ -1699,7 +1699,7 @@ const Grievances = () => {
                     </DialogHeader>
                     <div className="space-y-3 pt-1">
                         <p className="text-xs text-muted-foreground">
-                            Paste any X / Twitter URL or a tweet id. We'll fetch the tweet, run Ollama sentiment classification, and add it to the BSK mentions feed.
+                            Paste any X / Twitter URL or a tweet id. We'll fetch the tweet, run Ollama sentiment classification, and add it to the Iraq Watch mentions feed.
                         </p>
                         <input
                             type="text"
@@ -1731,12 +1731,12 @@ const Grievances = () => {
                 <DialogContent className="max-w-2xl">
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2">
-                            <Tag className="h-4 w-4 text-orange-600" /> BSK Tracking Keywords
+                            <Tag className="h-4 w-4 text-red-600" /> Iraq Watch Tracking Keywords
                         </DialogTitle>
                     </DialogHeader>
                     <div className="space-y-3 pt-1">
                         <p className="text-xs text-muted-foreground">
-                            These keywords are what the auto-fetcher searches every 10–30 minutes. Add anything related to Bandi Sanjay Kumar — names, hashtags, opposition keywords, constituency landmarks. Telugu, Hindi and English all work.
+                            These keywords are what the auto-fetcher searches every 10–30 minutes. Add anything related to Iraq — political names, security events, hashtags, governorate names. Arabic and English both work.
                         </p>
                         <div className="flex gap-2">
                             <input
@@ -1744,7 +1744,7 @@ const Grievances = () => {
                                 value={newKeywordInput}
                                 onChange={(e) => setNewKeywordInput(e.target.value)}
                                 onKeyDown={(e) => { if (e.key === 'Enter') handleAddKeyword(); }}
-                                placeholder="e.g. #BandiSanjay  ·  Karimnagar paddy procurement  ·  బండి సంజయ్"
+                                placeholder="e.g. #Iraq  ·  Baghdad security  ·  رئيس العراق"
                                 disabled={keywordSaving}
                                 className="flex-1 bg-white border border-slate-200 rounded-md px-2.5 py-2 text-sm hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 placeholder:text-slate-400"
                             />
@@ -2042,15 +2042,10 @@ const Grievances = () => {
                             className="text-xs border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-violet-400/30 focus:border-violet-400 bg-white"
                         >
                             <option value="all">All Districts</option>
-                            {['Karimnagar','Rajanna Sircilla','Jagtial','Peddapalli','Siddipet',
-                              'Hyderabad','Secunderabad','Rangareddy','Medchal-Malkajgiri',
-                              'Warangal','Hanamkonda','Khammam','Bhadradri Kothagudem',
-                              'Nizamabad','Kamareddy','Mahbubnagar','Nalgonda','Suryapet',
-                              'Sangareddy','Medak','Adilabad','Nirmal','Mancherial',
-                              'Kumuram Bheem Asifabad','Mahabubabad','Jangaon',
-                              'Jayashankar Bhupalpally','Wanaparthy','Nagarkurnool',
-                              'Jogulamba Gadwal','Vikarabad','Narayanpet','Mulugu',
-                              'Yadadri Bhuvanagiri'].map(d => (
+                            {['Baghdad','Basra','Nineveh','Erbil','Sulaymaniyah','Dohuk',
+                              'Kirkuk','Anbar','Diyala','Saladin','Babil','Najaf',
+                              'Karbala','Qadisiyyah','Wasit','Maysan','Thi Qar',
+                              'Muthanna'].map(d => (
                                 <option key={d} value={d}>{d}</option>
                             ))}
                         </select>
@@ -2125,7 +2120,7 @@ const Grievances = () => {
                             <p className="text-xs text-slate-400 mt-1">
                                 {(rssDistrict !== 'all' || rssCategory !== 'all' || rssSourceType !== 'all' || rssSearch)
                                     ? 'Try clearing some filters.'
-                                    : 'Start the Blura Engine to populate news. See Blura-Engine-master/telangana_main.py (entry script for Telangana data).'}
+                                    : 'Start the Blura Engine to populate news for Iraq.'}
                             </p>
                             {(rssDistrict !== 'all' || rssCategory !== 'all' || rssSourceType !== 'all' || rssSearch) && (
                                 <Button variant="outline" size="sm" className="mt-3 text-xs"

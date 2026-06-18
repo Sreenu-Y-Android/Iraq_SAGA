@@ -47,7 +47,7 @@ async function categorizeText(text, retryCount = 1) {
 `).join('\n');
 
   const prompt = `
-You are an elite multilingual content moderation expert specializing in the Indian sociopolitical context.
+You are an elite multilingual content moderation expert specializing in the Iraqi sociopolitical context.
 You have TWO jobs:
 1. CONTENT MODERATION: Select EXACTLY ONE moderation category from the provided list.
 2. GRIEVANCE TOPIC: Classify what real-world issue this post is about.
@@ -57,10 +57,10 @@ You have TWO jobs:
 JOB 1: CONTENT MODERATION
 ════════════════════════
 ANALYSIS RULES:
-- TRANSLITERATION HANDLING: If the text is an Indian language written in English script (e.g., Romanized Telugu/Hindi), you MUST first correctly translate the intent. Do not assume it is English. 
+- TRANSLITERATION HANDLING: If the text is in Arabic written in English script (Romanized Arabic), you MUST first correctly translate the intent. Do not assume it is English.
 - INTENT OVER SURFACE: Identify threats, slurs, and violent intent even when expressed in informal or transliterated slang.
 - CONTEXT: Distinguish between neutral political dissent and targeted harm.
-- RELIGIOUS GREETINGS ARE HARMLESS: Common Indian greetings and blessings like "जय माता दी", "Jai Mata Di", "Jai Shri Ram", "Allahu Akbar", "Waheguru Ji", "Om Namah Shivaya", "Radhe Radhe", "Har Har Mahadev" etc. are NORMAL everyday expressions. They are NOT communal content, NOT hate speech, NOT threats. Tagging a political handle while saying a greeting does NOT make it communal or political.
+- RELIGIOUS GREETINGS ARE HARMLESS: Common greetings like "Allahu Akbar", "Inshallah", "Mashallah", "Alhamdulillah", "Bismillah", "Assalamu Alaikum" etc. are NORMAL everyday expressions. They are NOT communal content, NOT hate speech, NOT threats. Tagging a political handle while saying a greeting does NOT make it communal or political.
 - BENIGN CONTENT DEFAULT: If a post is just a greeting, blessing, compliment, congratulation, or casual conversation with NO harmful intent → ALWAYS classify as 'Normal'. Do NOT overthink or force a harmful category onto harmless text.
 
 AVAILABLE CATEGORIES:
@@ -101,16 +101,16 @@ RULES:
 ════════════════════════
 JOB 3: SENTIMENT ANALYSIS
 ════════════════════════
-Identify the sentiment in the context of Shri Bandi Sanjay Kumar (BJP, MP Karimnagar) and the BJP in Telangana:
+Identify the sentiment in the context of Iraq — its government, security, and political landscape:
 - 'positive':
-    * Praise, gratitude or support towards Bandi Sanjay Kumar (BSK), BJP Telangana, or the BJP-led Central Government.
-    * Appreciation for BSK's work in Karimnagar Lok Sabha constituency (Karimnagar, Choppadandi, Vemulawada, Sircilla, Manakondur, Husnabad, Huzurabad).
-    * Criticism, mockery, or reporting of scandals regarding opposition parties in Telangana (INC/Congress, BRS/TRS, AIMIM).
-    * General positive greetings, festival messages, and celebrations involving BSK / BJP.
+    * Praise, gratitude or support towards the Iraqi government, President Abdul Latif Rashid, or PM Al-Sudani.
+    * Appreciation for Iraqi security forces, reconstruction efforts, or national stability.
+    * Criticism, mockery, or reporting of scandals regarding ISIS/Daesh or foreign interference in Iraq.
+    * General positive greetings, national pride messages, and celebrations involving Iraqi leaders.
 - 'negative':
-    * Direct criticism, complaints, or anger directed at Bandi Sanjay Kumar, BJP Telangana, or BJP leaders.
-    * Genuine public grievances within Karimnagar / Telangana (electricity, water, roads, jobs, farmer issues, law & order).
-    * Hate speech, communal incitement, or personal attacks against BSK.
+    * Direct criticism, complaints, or anger directed at the Iraqi government, PMF, or Kurdish leaders.
+    * Genuine public grievances within Iraq (electricity, water, roads, jobs, corruption, law & order).
+    * Hate speech, sectarian incitement, or personal attacks against Iraqi officials.
 - 'neutral':
     * Purely informational news, questions, or vague statements without clear political or emotional bias.
 

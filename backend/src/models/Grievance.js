@@ -322,7 +322,7 @@ const grievanceSchema = new mongoose.Schema({
     forensic_results: { type: mongoose.Schema.Types.Mixed },
     video_transcript: { type: String },
     analyzed_at: { type: Date },
-    // ── Target-aware political intelligence (BSK-relative) ────────
+    // ── Target-aware political intelligence (Iraq-relative) ───────
     bsk_sentiment: { type: String, enum: ['positive', 'negative', 'neutral'] },
     generic_sentiment: { type: String, enum: ['positive', 'negative', 'neutral'] },
     target_entity: { type: String },

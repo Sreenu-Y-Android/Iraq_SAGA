@@ -741,7 +741,7 @@ const InstagramMonitor = () => {
     if (['official', 'government', 'govt', 'party', 'public_representative'].includes(cat)) return true;
     if (s.is_verified) return true;
 
-    const keywords = ['bjp', 'congress', 'inc', 'govt', 'official', 'telangana', 'police', 'collector', 'minister', 'cmo', 'office', 'media'];
+    const keywords = ['iraq', 'baghdad', 'govt', 'official', 'minister', 'security', 'police', 'parliament', 'pmf', 'military', 'office', 'media'];
     return keywords.some(k => name.includes(k) || handle.includes(k));
   }, []);
 

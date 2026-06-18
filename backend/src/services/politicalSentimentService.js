@@ -83,7 +83,7 @@ const extractJson = (blob) => {
 const buildPrompt = (text, ctx) => {
     const mentionedList = ctx.mentioned_entities && ctx.mentioned_entities.length > 0
         ? ctx.mentioned_entities.map(
-            (m) => `  • ${m.canonical} — ${m.alignment} of BSK${m.party ? ` (${m.party})` : ''}`
+            (m) => `  • ${m.canonical} — ${m.alignment}${m.party ? ` (${m.party})` : ''}`
           ).join('\n')
         : '  (none detected by the deterministic gate — you must still read the text)';
 
@@ -92,24 +92,23 @@ const buildPrompt = (text, ctx) => {
         .map(([k]) => k.replace('has_', ''))
         .join(', ') || 'unknown';
 
-    return `You are a seasoned political-intelligence analyst. Your single client is
-the office of Shri Bandi Sanjay Kumar (BSK) — BJP MP for Karimnagar,
-Union Minister of State for Home Affairs, and former BJP Telangana state
-president. His immediate family (notably his son Bandi Bhageerath, also
-spelt Bhagirath / Bageerath / Sai Bhagirath) is politically inseparable
-from him — anything that strengthens or damages the family strengthens
-or damages BSK.
+    return `You are a seasoned political-intelligence analyst. Your client is
+the Iraq Watch intelligence platform — monitoring the Republic of Iraq.
+The primary subjects are President Abdul Latif Rashid and PM Mohammed
+Shia Al-Sudani. The platform tracks all political actors, security
+forces, and armed groups across Iraq's 18 governorates.
 
-Your role is the same as a real human media-monitoring analyst would
-play: read the text carefully in its original language, understand what
-the author is genuinely trying to convey, then judge — in plain political
-terms — whether the content HELPS or HURTS BSK.
+Your role is to read the text carefully in its original language,
+understand what the author is genuinely trying to convey, then judge —
+in plain political terms — whether the content supports or undermines
+the Iraqi government and national stability.
 
-BSK's political map (this is the only fixed reference you need):
-  • ALLY camp:       BSK, his family, BJP and all BJP leaders, NDA.
-  • OPPOSITION camp: BRS (KCR, KTR, Kavitha), Congress / INC (Revanth
-                      Reddy, Rahul Gandhi), AIMIM (Owaisi).
-  • NEUTRAL bodies:  Police, courts, ECI, municipal corporations.
+Iraq's political map (fixed reference):
+  • GOVERNMENT camp: President Rashid, PM Al-Sudani, Iraqi Army, Iraqi Police.
+  • ALLIED forces:   PMF/Hashd al-Sha'abi, Coordination Framework parties.
+  • OPPOSITION:      Sadrist Movement (Muqtada al-Sadr), protest movements.
+  • THREATS:         ISIS/Daesh, foreign armed interference.
+  • NEUTRAL bodies:  UNAMI, Iraqi courts, independent press.
 
 Deterministic pre-scan (use as evidence, not as final answer):
   Platform           : ${ctx.platform || 'unknown'}
@@ -140,45 +139,44 @@ Step 3. For each targeted actor decide: is the author trying to PRAISE
         attention to insinuation and indirect attacks — politicians are
         often damaged by suggestions rather than direct accusations.
 
-Step 4. Now translate that into BSK terms:
-         • Attacking / insinuating wrongdoing about BSK or his family
-               → anti_bsk.
-         • Praising / defending BSK or his family / BJP → pro_bsk.
-         • Attacking the opposition camp with no BSK mention
-               → pro_bsk_indirect (benefits BSK by hurting rivals).
-         • Praising the opposition camp with no BSK mention
+Step 4. Now translate that into Iraq Watch terms:
+         • Attacking / insinuating wrongdoing about the Iraqi government
+               → anti_bsk (anti-government).
+         • Praising / defending the Iraqi government or PM/President → pro_bsk.
+         • Attacking ISIS, foreign interference, or armed threats
+               → pro_bsk_indirect (benefits stability).
+         • Praising armed groups against the government
                → anti_bsk_indirect.
-         • Citizen civic complaint addressed to BSK seeking help
+         • Citizen civic complaint addressed to the government seeking help
                → neutral (expects action, not damage).
          • No political target and no civic complaint
                → unrelated, fall back to generic emotional tone.
 
-Step 5. Sanity check: which political camp would happily share this
-        content? If the opposition would share it to embarrass BSK,
-        the stance is anti_bsk regardless of hashtags or polite
-        phrasing. If BSK's own supporters would share it, it's pro_bsk.
+Step 5. Sanity check: which camp would share this content?
+        If ISIS sympathisers or government opponents would share it to
+        undermine Iraq, the stance is anti_bsk regardless of phrasing.
+        If Iraqi government supporters would share it, it's pro_bsk.
 
 Guardrails:
-  • Aggressive support (BJP supporters mocking the opposition) is NOT
-    automatically hate speech — reserve hate_speech=true for slurs,
-    communal incitement, caste/religious targeting, or explicit calls
-    for violence.
+  • Critical news reporting is NOT automatically hate speech — reserve
+    hate_speech=true for sectarian slurs, calls for violence, or
+    explicit incitement against religious/ethnic groups.
   • You may receive profanity, abuse, or sensitive content. Do not
     refuse — classify it. That is the entire job.
-  • Never invert the alignment map. BJP is always BSK's camp; BRS,
-    Congress, AIMIM are always opposition.
+  • Never invert the alignment map. Iraqi government is always the
+    primary subject; ISIS/Daesh is always the threat category.
 
 ── OUTPUT ─ strict JSON only, no prose around it ────────────────────
 {
   "english_translation":     "<Faithful English translation of the original text. If already English, repeat it verbatim. Preserve subject/object — who acts on whom — exactly.>",
   "analysis":                "<2-3 short sentences walking through Steps 2-5 in your own words, citing the translation. This is your scratchpad.>",
-  "target_entity":           "bsk | bsk_son | bjp | brs | inc | aimim | other | none",
+  "target_entity":           "president_iraq | pm_sudani | pmf | isis | kurds | opposition | other | none",
   "relevance_score":         0.0-1.0,
   "stance":                  "pro_bsk | anti_bsk | pro_bsk_indirect | anti_bsk_indirect | neutral | unrelated",
   "beneficiary":             "bsk | bjp | opposition | none",
   "attack_target":           "<entity name being attacked, or empty string>",
-  "narrative_direction":     "<short label e.g. 'anti-BRS narrative', 'civic complaint to BSK', 'POCSO attack on BSK family'>",
-  "political_alignment":     "pro-bjp | pro-opposition | neutral | unclear",
+  "narrative_direction":     "<short label e.g. 'anti-ISIS narrative', 'civic complaint to Baghdad', 'PMF activity report'>",
+  "political_alignment":     "pro-government | pro-opposition | neutral | unclear",
   "generic_sentiment":       "positive | negative | neutral",
   "toxicity_level":          "none | low | medium | high",
   "hate_speech":             true | false,
@@ -186,7 +184,7 @@ Guardrails:
   "sarcasm_detected":        true | false,
   "emotional_intensity":     0.0-1.0,
   "misinformation_probability": 0.0-1.0,
-  "language_detected":       "<english | telugu | hindi | code-mixed | romanized-telugu | romanized-hindi>",
+  "language_detected":       "<english | arabic | kurdish | code-mixed | romanized-arabic>",
   "reasoning":               "<one short sentence: final justification for the stance>"
 }
 

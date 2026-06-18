@@ -9,9 +9,9 @@ import { Loader2, TrendingUp, TrendingDown, Minus, BarChart3, Tag } from 'lucide
 import { cn } from '../lib/utils';
 import { BSK_HERO, LOCAL_FALLBACK } from '../config/bskMedia';
 
-// BSK is MP from Karimnagar Lok Sabha Constituency in Telangana.
-const KARIMNAGAR_PC = 'KARIMNAGAR';
-const BSK_PC_DISPLAY = 'Karimnagar';
+// Primary monitoring focus: Baghdad Governorate, Iraq.
+const KARIMNAGAR_PC = 'BAGHDAD';
+const BSK_PC_DISPLAY = 'Baghdad';
 
 const TOPIC_STYLES = {
   'Political Criticism': 'bg-purple-50 text-purple-700 ring-purple-200',
@@ -51,8 +51,8 @@ const canonicalizeTopic = (value) => {
 
 const getTopicStyle = (topic) => TOPIC_STYLES[canonicalizeTopic(topic)] || 'bg-teal-50 text-teal-700 ring-teal-200';
 
-// Assembly segments inside Karimnagar Lok Sabha PC (BSK's MP seat)
-const AC_NAMES = ['Karimnagar', 'Choppadandi (SC)', 'Vemulawada', 'Sircilla', 'Manakondur (SC)', 'Husnabad', 'Huzurabad'];
+// Key monitoring areas inside Baghdad Governorate, Iraq
+const AC_NAMES = ['Baghdad', 'Sadr City', 'Kadhimiya', 'Adhamiya', 'Rusafa', 'Karkh', 'Mansour'];
 
 const SENTIMENT_TIERS = {
   high:    { fill: '#15803d', hover: '#166534', stroke: '#14532d' },
@@ -87,35 +87,41 @@ const mergeTopicEntries = (entries = []) => {
   });
   return Object.entries(topicMap).sort((a, b) => b[1] - a[1]);
 };
-// City / town → Assembly segment inside Karimnagar Lok Sabha PC
+// City / neighbourhood → Baghdad district zone
 const CITY_TO_AC = {
-  'karimnagar': 'Karimnagar', 'choppadandi': 'Choppadandi (SC)',
-  'vemulawada': 'Vemulawada', 'sircilla': 'Sircilla', 'rajanna sircilla': 'Sircilla',
-  'manakondur': 'Manakondur (SC)', 'husnabad': 'Husnabad', 'huzurabad': 'Huzurabad',
-  'thimmapur': 'Manakondur (SC)', 'jagtial': 'Karimnagar', 'peddapalli': 'Manakondur (SC)',
+  'baghdad': 'Baghdad', 'sadr city': 'Sadr City',
+  'kadhimiya': 'Kadhimiya', 'kadhimiyah': 'Kadhimiya',
+  'adhamiya': 'Adhamiya', 'rusafa': 'Rusafa',
+  'karkh': 'Karkh', 'mansour': 'Mansour',
+  'karrada': 'Karkh', 'dora': 'Karkh', 'abu ghraib': 'Baghdad',
 };
 
-// City / town → Telangana district (uppercase keys to match geojson DIST_NAME)
+// City / town → Iraq Governorate (uppercase keys to match geojson DIST_NAME)
 const CITY_TO_DISTRICT = {
-  'hyderabad': 'HYDERABAD', 'secunderabad': 'HYDERABAD', 'cyberabad': 'RANGAREDDY',
-  'rangareddy': 'RANGAREDDY', 'medchal': 'MEDCHAL-MALKAJGIRI', 'malkajgiri': 'MEDCHAL-MALKAJGIRI',
-  'karimnagar': 'KARIMNAGAR', 'jagtial': 'JAGTIAL', 'peddapalli': 'PEDDAPALLI',
-  'sircilla': 'RAJANNA SIRCILLA', 'rajanna sircilla': 'RAJANNA SIRCILLA',
-  'warangal': 'WARANGAL URBAN', 'hanamkonda': 'WARANGAL URBAN',
-  'khammam': 'KHAMMAM', 'nizamabad': 'NIZAMABAD', 'kamareddy': 'KAMAREDDY',
-  'mahbubnagar': 'MAHBUBNAGAR', 'nalgonda': 'NALGONDA', 'suryapet': 'SURYAPET',
-  'medak': 'MEDAK', 'siddipet': 'SIDDIPET', 'sangareddy': 'SANGAREDDY',
-  'adilabad': 'ADILABAD', 'nirmal': 'NIRMAL', 'mancherial': 'MANCHERIAL',
-  'asifabad': 'KUMURAM BHEEM ASIFABAD', 'bhadradri': 'BHADRADRI KOTHAGUDEM',
-  'kothagudem': 'BHADRADRI KOTHAGUDEM', 'mahabubabad': 'MAHABUBABAD',
-  'jangaon': 'JANGAON', 'jayashankar': 'JAYASHANKAR BHUPALPALLY', 'bhupalpally': 'JAYASHANKAR BHUPALPALLY',
-  'wanaparthy': 'WANAPARTHY', 'nagarkurnool': 'NAGARKURNOOL', 'jogulamba': 'JOGULAMBA GADWAL',
-  'gadwal': 'JOGULAMBA GADWAL', 'vikarabad': 'VIKARABAD', 'narayanpet': 'NARAYANPET',
-  'mulugu': 'MULUGU', 'yadadri': 'YADADRI BHUVANAGIRI', 'bhuvanagiri': 'YADADRI BHUVANAGIRI',
-  // Karimnagar PC assembly-level towns → Karimnagar district (BSK's seat)
-  'choppadandi': 'KARIMNAGAR', 'vemulawada': 'RAJANNA SIRCILLA',
-  'manakondur': 'KARIMNAGAR', 'husnabad': 'SIDDIPET', 'huzurabad': 'KARIMNAGAR',
-  'telangana': null,
+  'baghdad': 'BAGHDAD', 'sadr city': 'BAGHDAD', 'kadhimiya': 'BAGHDAD',
+  'adhamiya': 'BAGHDAD', 'rusafa': 'BAGHDAD', 'karkh': 'BAGHDAD',
+  'mansour': 'BAGHDAD', 'karrada': 'BAGHDAD', 'dora': 'BAGHDAD',
+  'abu ghraib': 'BAGHDAD', 'taji': 'BAGHDAD', 'mahmoudiya': 'BAGHDAD',
+  'basra': 'BASRA', 'zubayr': 'BASRA', 'fao': 'BASRA', 'hartha': 'BASRA',
+  'mosul': 'NINEVEH', 'nineveh': 'NINEVEH', 'tel afar': 'NINEVEH',
+  'sinjar': 'NINEVEH', 'bartella': 'NINEVEH',
+  'erbil': 'ERBIL', 'arbil': 'ERBIL', 'hawler': 'ERBIL', 'soran': 'ERBIL',
+  'sulaymaniyah': 'SULAYMANIYAH', 'sulaimani': 'SULAYMANIYAH', 'halabja': 'HALABJA',
+  'dohuk': 'DOHUK', 'dahuk': 'DOHUK', 'zakho': 'DOHUK',
+  'kirkuk': 'KIRKUK', 'hawija': 'KIRKUK',
+  'ramadi': 'ANBAR', 'fallujah': 'ANBAR', 'anbar': 'ANBAR',
+  'haditha': 'ANBAR', 'qaim': 'ANBAR',
+  'baquba': 'DIYALA', 'diyala': 'DIYALA', 'khanaqin': 'DIYALA',
+  'tikrit': 'SALADIN', 'samarra': 'SALADIN', 'baiji': 'SALADIN',
+  'hillah': 'BABIL', 'babylon': 'BABIL', 'babil': 'BABIL',
+  'najaf': 'NAJAF', 'kufa': 'NAJAF',
+  'karbala': 'KARBALA', 'hindiya': 'KARBALA',
+  'diwaniyah': 'QADISIYYAH', 'qadisiyyah': 'QADISIYYAH',
+  'kut': 'WASIT', 'wasit': 'WASIT',
+  'amara': 'MAYSAN', 'maysan': 'MAYSAN',
+  'nasiriyah': 'DHI QAR', 'thi qar': 'DHI QAR', 'dhi qar': 'DHI QAR',
+  'samawah': 'MUTHANNA', 'muthanna': 'MUTHANNA',
+  'iraq': null,
 };
 
 /* ─── Sentiment Pie (pure SVG donut) ─── */
@@ -174,7 +180,7 @@ const TelanganaMap = ({ embedded = false }) => {
   const [sentimentData, setSentimentData] = useState(null);
   const [categoryData, setCategoryData] = useState(null);
   const [grievanceStats, setGrievanceStats] = useState(null);
-  const [karimnagarSummary, setKarimnagarSummary] = useState(null);
+  const [karimnagarSummary, setBaghdadSummary] = useState(null);
   const [hoverTweets, setHoverTweets] = useState([]);
   const [hoverTweetsLoading, setHoverTweetsLoading] = useState(false);
   const svgRef = useRef(null);
@@ -213,11 +219,12 @@ const TelanganaMap = ({ embedded = false }) => {
   }, [navigate]);
 
   useEffect(() => {
-    // Load assembly-constituency boundaries. Prefer Telangana geojson files.
+    // Load Iraq governorate boundaries. Prefer Iraq geojson files.
     const tryLoad = async () => {
       const sources = [
+        '/iraq_governorates.geojson',
+        '/iraq_districts.geojson',
         '/telangana_districts.geojson',
-        '/telangana_ac.geojson',
       ];
       for (const url of sources) {
         try {
@@ -243,9 +250,9 @@ const TelanganaMap = ({ embedded = false }) => {
 
           const allNorm = data.features.map((f) => ({ ...f, properties: normaliseProps(f.properties) }));
 
-          const telangana = allNorm.filter(f => f.properties.ST_NAME === 'TELANGANA');
-          let features = telangana.length > 0
-            ? telangana
+          const iraq = allNorm.filter(f => f.properties.ST_NAME === 'IRAQ' || f.properties.COUNTRY === 'IRAQ');
+          let features = iraq.length > 0
+            ? iraq
             : allNorm;
 
           const seenKeys = new Set();
@@ -270,19 +277,19 @@ const TelanganaMap = ({ embedded = false }) => {
       api.get('/grievances/sentiment-analytics').catch(() => ({ data: null })),
       api.get('/grievances/category-analytics').catch(() => ({ data: null })),
       api.get('/grievances/dashboard-stats').catch(() => ({ data: null })),
-      api.get('/grievances/location-summary', { params: { location_city: 'karimnagar' } }).catch(() => ({ data: null })),
+      api.get('/grievances/location-summary', { params: { location_city: 'baghdad' } }).catch(() => ({ data: null })),
     ]).then(([sentRes, catRes, statsRes, summaryRes]) => {
       setSentimentData(sentRes.data);
       setCategoryData(catRes.data);
       setGrievanceStats(statsRes.data);
-      setKarimnagarSummary(summaryRes.data);
+      setBaghdadSummary(summaryRes.data);
     });
   }, [embedded]);
 
   const fetchMapStats = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await api.get('/grievances/map', { params: { days: 365, scope: embedded ? 'karimnagar' : 'all' } });
+      const res = await api.get('/grievances/map', { params: { days: 365, scope: embedded ? 'baghdad' : 'all' } });
       const locs = res.data?.locations;
       if (locs && Object.keys(locs).length > 0) {
         setMapStats(locs);
@@ -333,7 +340,7 @@ const TelanganaMap = ({ embedded = false }) => {
 
   const byDistrict = useMemo(() => {
     const m = {};
-    const karimnagarAggregate = karimnagarSummary
+    const baghdadAggregate = karimnagarSummary
       ? {
         total: karimnagarSummary.total || 0,
         positive: karimnagarSummary.positive || 0,
@@ -341,22 +348,22 @@ const TelanganaMap = ({ embedded = false }) => {
         neutral: karimnagarSummary.neutral || 0,
         categories: Array.isArray(karimnagarSummary.categories) ? karimnagarSummary.categories : []
       }
-      : (mapStats?.karimnagar || null);
+      : (mapStats?.baghdad || null);
 
-    if (karimnagarAggregate) {
-      m['KARIMNAGAR'] = {
-        count: karimnagarAggregate.total ?? karimnagarAggregate.count ?? 0,
-        positive: karimnagarAggregate.positive || 0,
-        negative: karimnagarAggregate.negative || 0,
-        neutral: karimnagarAggregate.neutral || 0,
-        categories: Array.isArray(karimnagarAggregate.categories) ? [...karimnagarAggregate.categories] : []
+    if (baghdadAggregate) {
+      m['BAGHDAD'] = {
+        count: baghdadAggregate.total ?? baghdadAggregate.count ?? 0,
+        positive: baghdadAggregate.positive || 0,
+        negative: baghdadAggregate.negative || 0,
+        neutral: baghdadAggregate.neutral || 0,
+        categories: Array.isArray(baghdadAggregate.categories) ? [...baghdadAggregate.categories] : []
       };
     }
 
     Object.entries(mapStats).forEach(([keyword, stats]) => {
       const dist = CITY_TO_DISTRICT[keyword];
       if (!dist) return;
-      if (karimnagarAggregate && dist === 'KARIMNAGAR') return;
+      if (baghdadAggregate && dist === 'BAGHDAD') return;
       if (!m[dist]) m[dist] = { count: 0, positive: 0, negative: 0, neutral: 0, categories: [] };
       const totalCount = (stats.negative || 0) + (stats.positive || 0) + (stats.neutral || 0);
       m[dist].count += totalCount;
@@ -369,7 +376,7 @@ const TelanganaMap = ({ embedded = false }) => {
       d.categories = mergeTopicEntries(d.categories);
     });
     return m;
-  }, [mapStats, karimnagarSummary]);
+  }, [mapStats, karimnagarSummary]); // karimnagarSummary = baghdadSummary (alias kept)
 
   const byAC = useMemo(() => {
     if (!embedded) return {};
@@ -395,15 +402,15 @@ const TelanganaMap = ({ embedded = false }) => {
     if (!geojson || !embedded) return null;
     const feats = geojson.features.filter(f =>
       (f.properties.PC_NAME || '').toUpperCase() === KARIMNAGAR_PC ||
-      (f.properties.DIST_NAME || '').toUpperCase() === 'KARIMNAGAR'
+      (f.properties.DIST_NAME || '').toUpperCase() === 'BAGHDAD'
     );
     return { ...geojson, features: feats };
   }, [geojson, embedded]);
 
   // ── Reference-style layout boxes ────────────────────────────────────
   // SVG is laid out as two sub-regions inside one viewBox:
-  //   • STATE_BOX = full Telangana on the left
-  //   • KARIM_BOX = blown-up Karimnagar district on the right
+  //   • STATE_BOX = full Iraq on the left
+  //   • KARIM_BOX = blown-up Baghdad governorate on the right
   // Embedded view (dashboard card) gets a tighter overall canvas.
   const layout = useMemo(() => {
     if (embedded) {
@@ -426,7 +433,7 @@ const TelanganaMap = ({ embedded = false }) => {
 
   const dims = layout.dims;
 
-  // State (Telangana) projection — always fits the whole-state outline
+  // Iraq projection — always fits the whole-country outline
   // into the left box, regardless of embedded vs. full-page mode.
   const { projection, pathGenerator } = useMemo(() => {
     if (!geojson) return { projection: null, pathGenerator: null };
@@ -435,10 +442,10 @@ const TelanganaMap = ({ embedded = false }) => {
     return { projection: proj, pathGenerator: geoPath().projection(proj) };
   }, [geojson, layout]);
 
-  // Karimnagar-only blown-up projection on the right side of the canvas.
+  // Baghdad-only blown-up projection on the right side of the canvas.
   const karimFeature = useMemo(() => {
     if (!geojson) return null;
-    return geojson.features.find((f) => (f.properties.DIST_NAME || '').toUpperCase() === 'KARIMNAGAR');
+    return geojson.features.find((f) => (f.properties.DIST_NAME || '').toUpperCase() === 'BAGHDAD');
   }, [geojson]);
 
   const { karimProjection, karimPath } = useMemo(() => {
@@ -484,7 +491,7 @@ const TelanganaMap = ({ embedded = false }) => {
     geojson.features.forEach(f => {
       const d = f.properties.DIST_NAME;
       if (!m[d]) m[d] = { name: d, hasKarimnagar: false };
-      if ((f.properties.PC_NAME || '').toUpperCase() === KARIMNAGAR_PC || (d || '').toUpperCase() === 'KARIMNAGAR') m[d].hasKarimnagar = true;
+      if ((f.properties.PC_NAME || '').toUpperCase() === KARIMNAGAR_PC || (d || '').toUpperCase() === 'BAGHDAD') m[d].hasKarimnagar = true;
     });
     return m;
   }, [geojson]);
@@ -514,38 +521,37 @@ const TelanganaMap = ({ embedded = false }) => {
         neutral: karimnagarSummary.neutral || 0
       };
     }
-    const karimnagar = mapStats?.karimnagar || byDistrict['KARIMNAGAR'];
-    if (karimnagar) return { positive: karimnagar.positive || 0, negative: karimnagar.negative || 0, neutral: karimnagar.neutral || 0 };
+    const baghdad = mapStats?.baghdad || byDistrict['BAGHDAD'];
+    if (baghdad) return { positive: baghdad.positive || 0, negative: baghdad.negative || 0, neutral: baghdad.neutral || 0 };
     return { positive: 0, negative: 0, neutral: 0 };
   }, [karimnagarSummary, mapStats, byDistrict]);
 
   const totalGrievances = useMemo(() => {
     if (karimnagarSummary) return karimnagarSummary.total || 0;
-    const karimnagar = mapStats?.karimnagar || byDistrict['KARIMNAGAR'];
-    if (!karimnagar) return 0;
-    return karimnagar.total ?? karimnagar.count ?? 0;
+    const baghdad = mapStats?.baghdad || byDistrict['BAGHDAD'];
+    if (!baghdad) return 0;
+    return baghdad.total ?? baghdad.count ?? 0;
   }, [karimnagarSummary, mapStats, byDistrict]);
 
   const topCategories = useMemo(() => {
     if (karimnagarSummary && Array.isArray(karimnagarSummary.categories)) {
       return mergeTopicEntries(karimnagarSummary.categories).slice(0, 6);
     }
-    const karimnagar = mapStats?.karimnagar || byDistrict['KARIMNAGAR'];
-    if (!karimnagar || !Array.isArray(karimnagar.categories)) return [];
-    return mergeTopicEntries(karimnagar.categories).slice(0, 6);
+    const baghdad = mapStats?.baghdad || byDistrict['BAGHDAD'];
+    if (!baghdad || !Array.isArray(baghdad.categories)) return [];
+    return mergeTopicEntries(baghdad.categories).slice(0, 6);
   }, [karimnagarSummary, mapStats, byDistrict]);
 
   if (!geojson) return <div className={cn('flex items-center justify-center', embedded ? 'h-full' : 'h-screen')}><Loader2 className="h-8 w-8 animate-spin text-green-600" /></div>;
 
-  /* ── Embedded: Telangana state map with Karimnagar callout ── */
+  /* ── Embedded: Iraq map with Baghdad callout ── */
   if (embedded) {
-    // Hover surfaces district-level stats; for non-Karimnagar districts
-    // byDistrict will return null and we fall back to a "no data" tooltip.
+    // Hover surfaces governorate-level stats; falls back to "no data" tooltip.
     const hovAcName = hoveredDistrict;
     const hovStats = hovAcName ? (byDistrict[hovAcName] || byAC[hovAcName] || { count: 0, positive: 0, negative: 0, neutral: 0, categories: [] }) : null;
     const hovTopCats = hovStats?.categories || [];
     const hovTotal = (hovStats?.negative || 0) + (hovStats?.positive || 0) + (hovStats?.neutral || 0);
-    const totalKarimnagarGrievances = (byDistrict['KARIMNAGAR']?.count) || Object.values(byAC).reduce((s, st) => s + (st.count || 0), 0);
+    const totalKarimnagarGrievances = (byDistrict['BAGHDAD']?.count) || Object.values(byAC).reduce((s, st) => s + (st.count || 0), 0);
 
     return (
       <div className="relative w-full h-full" ref={containerRef}>
@@ -565,11 +571,11 @@ const TelanganaMap = ({ embedded = false }) => {
               </filter>
             </defs>
 
-            {/* LEFT — Full Telangana with Karimnagar highlighted */}
+            {/* LEFT — Full Iraq with Baghdad highlighted */}
             <g filter="url(#tg-extrude-emb)">
               {geojson.features.map((f, i) => {
                 const dn = (f.properties.DIST_NAME || '').toUpperCase();
-                const isKarim = dn === 'KARIMNAGAR';
+                const isKarim = dn === 'BAGHDAD';
                 const isHov = hoveredDistrict === dn;
                 return (
                   <path
@@ -589,9 +595,9 @@ const TelanganaMap = ({ embedded = false }) => {
               })}
             </g>
 
-            {/* Leader line from Karimnagar centroid → blown-up rect on the right */}
+            {/* Leader line from Baghdad centroid → blown-up rect on the right */}
             {(() => {
-              const k = districtCentroids['KARIMNAGAR'];
+              const k = districtCentroids['BAGHDAD'];
               if (!k || !karimFeature || !karimPath) return null;
               const x1 = k[0], y1 = k[1];
               const x2 = layout.karimBox.x + 8;
@@ -605,7 +611,7 @@ const TelanganaMap = ({ embedded = false }) => {
               );
             })()}
 
-            {/* RIGHT — Blown-up Karimnagar */}
+            {/* RIGHT — Blown-up Baghdad */}
             {karimFeature && karimPath && (
               <g pointerEvents="none">
                 <path d={karimPath(karimFeature.geometry)} transform="translate(2,4)" fill="#1a1a1a" opacity={0.85} />
@@ -616,15 +622,15 @@ const TelanganaMap = ({ embedded = false }) => {
             {/* Label for the blown-up region */}
             <text x={layout.labelX} y={layout.labelY}
               style={{ fontSize: '20px', fontWeight: 900, fill: '#0f172a', letterSpacing: '0.04em' }}>
-              KARIMNAGAR
+              BAGHDAD
             </text>
             <text x={layout.labelX} y={layout.labelY + 18}
               style={{ fontSize: '10px', fontWeight: 600, fill: '#475569', letterSpacing: '0.22em' }}>
-              CONSTITUENCY
+              GOVERNORATE
             </text>
           </svg>
           <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm border border-red-200 rounded-lg px-2.5 py-1.5 text-[10px] text-gray-600 shadow-sm">
-            <span className="font-bold text-red-700">Karimnagar PC · BSK</span>
+            <span className="font-bold text-red-700">Baghdad · Iraq</span>
           </div>
           {hovAcName && (
             <div
@@ -639,7 +645,7 @@ const TelanganaMap = ({ embedded = false }) => {
                 <div className="bg-green-600 text-white px-3 py-1.5 flex items-center justify-between">
                   <span className="font-bold text-[12px]">{hovAcName}</span>
                   <span className="text-[9px] bg-white/20 px-1.5 py-0.5 rounded">
-                    {hovAcName === 'KARIMNAGAR' ? 'BSK · Karimnagar PC' : 'District · Telangana'}
+                    {hovAcName === 'BAGHDAD' ? 'Capital · Iraq' : 'Governorate · Iraq'}
                   </span>
                 </div>
                 <div className="p-2.5">
@@ -715,8 +721,8 @@ const TelanganaMap = ({ embedded = false }) => {
       {/* Header */}
       <div className="mb-5 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Karimnagar Constituency Overview Dashboard</h1>
-          <p className="text-xs text-orange-700 font-semibold mt-1 tracking-wide uppercase">Bandi Sanjay Kumar · Member of Parliament</p>
+          <h1 className="text-2xl font-bold text-gray-900">Iraq Intelligence Overview Dashboard</h1>
+          <p className="text-xs text-red-700 font-semibold mt-1 tracking-wide uppercase">Iraq Watch · Social Media Intelligence Platform</p>
         </div>
         <div className="flex items-center gap-3">
           {loading && <Loader2 className="h-5 w-5 animate-spin text-gray-400" />}
@@ -732,7 +738,7 @@ const TelanganaMap = ({ embedded = false }) => {
         {/* LEFT PANEL */}
         <div className="w-[340px] flex-shrink-0 space-y-4">
           
-          {/* Leader Photo — Bandi Sanjay Kumar */}
+          {/* Leader Photo — President of Iraq */}
           <Card className="overflow-hidden border-0 shadow-lg">
             <div className="relative">
               <img
@@ -747,12 +753,12 @@ const TelanganaMap = ({ embedded = false }) => {
                   e.currentTarget.src = LOCAL_FALLBACK;
                 }}
               />
-              {/* saffron gradient overlay at bottom */}
-              <div className="absolute inset-0 bg-gradient-to-t from-orange-900/90 via-orange-900/20 to-transparent" />
+              {/* red gradient overlay at bottom */}
+              <div className="absolute inset-0 bg-gradient-to-t from-red-900/90 via-red-900/20 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-4">
-                <h3 className="text-xl font-extrabold text-white leading-tight drop-shadow">Bandi Sanjay Kumar</h3>
-                <p className="text-amber-200 text-sm font-medium mt-0.5">Member of Parliament · BJP Telangana</p>
-                <span className="inline-block mt-1.5 px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-sm text-white text-[11px] font-semibold border border-white/30">MP · Karimnagar Lok Sabha</span>
+                <h3 className="text-xl font-extrabold text-white leading-tight drop-shadow">Abdul Latif Rashid</h3>
+                <p className="text-red-200 text-sm font-medium mt-0.5">President of Iraq</p>
+                <span className="inline-block mt-1.5 px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-sm text-white text-[11px] font-semibold border border-white/30">جمهورية العراق</span>
               </div>
             </div>
           </Card>
@@ -761,7 +767,7 @@ const TelanganaMap = ({ embedded = false }) => {
           <Card className="p-4 border-0 shadow-md">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-sm font-semibold text-slate-700">Sentiment Analysis</h4>
-              <span className="text-[10px] font-semibold text-orange-700 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-200">Karimnagar</span>
+              <span className="text-[10px] font-semibold text-red-700 bg-red-50 px-2 py-0.5 rounded-full border border-red-200">Baghdad</span>
             </div>
             <div className="flex justify-center">
               <SentimentPie
@@ -864,7 +870,7 @@ const TelanganaMap = ({ embedded = false }) => {
                 </filter>
               </defs>
 
-              {/* LEFT — Full Telangana with Karimnagar highlighted */}
+              {/* LEFT — Full Iraq map with Baghdad highlighted */}
               <g filter="url(#telangana-shadow)">
                 {geojson.features.map((f, i) => {
                   const dn = (f.properties.DIST_NAME || '').toUpperCase();
@@ -890,7 +896,7 @@ const TelanganaMap = ({ embedded = false }) => {
                 })}
               </g>
 
-              {/* Leader line: Karimnagar centroid (on the state map) → marker on the blown-up rect */}
+              {/* Leader line: Baghdad centroid (on the Iraq map) → marker on the blown-up rect */}
               {(() => {
                 const k = districtCentroids['KARIMNAGAR'];
                 if (!k || !karimFeature || !karimPath) return null;
@@ -906,7 +912,7 @@ const TelanganaMap = ({ embedded = false }) => {
                 );
               })()}
 
-              {/* RIGHT — Blown-up Karimnagar district */}
+              {/* RIGHT — Blown-up Baghdad governorate */}
               {karimFeature && karimPath && (
                 <g pointerEvents="none">
                   <path d={karimPath(karimFeature.geometry)} transform="translate(3,5)" fill="#1a1a1a" opacity={0.85} />
@@ -917,14 +923,14 @@ const TelanganaMap = ({ embedded = false }) => {
               {/* Label for the blown-up region — placed above the blown-up rect */}
               <text x={layout.labelX} y={layout.labelY}
                 style={{ fontSize: '32px', fontWeight: 900, fill: '#0f172a', letterSpacing: '0.04em' }}>
-                KARIMNAGAR
+                BAGHDAD
               </text>
               <text x={layout.labelX} y={layout.labelY + 24}
                 style={{ fontSize: '14px', fontWeight: 600, fill: '#475569', letterSpacing: '0.28em' }}>
-                CONSTITUENCY
+                GOVERNORATE
               </text>
 
-              {/* Optional grievance badge on top of the blown-up Karimnagar */}
+              {/* Optional grievance badge on top of the blown-up Baghdad */}
               {(totalGrievances || 0) > 0 && (
                 <g pointerEvents="none">
                   <rect
@@ -946,10 +952,10 @@ const TelanganaMap = ({ embedded = false }) => {
             </svg>
 
             {/* Summary strip */}
-            <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm border border-orange-200 rounded-lg px-3 py-2 text-[11px] text-gray-600 shadow-sm">
-              <span className="font-bold text-orange-700">Karimnagar Constituency</span>
+            <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm border border-red-200 rounded-lg px-3 py-2 text-[11px] text-gray-600 shadow-sm">
+              <span className="font-bold text-red-700">Baghdad Governorate</span>
               <div className="flex items-center gap-1 mt-0.5">
-                <span className="inline-block w-2 h-2 rounded-sm bg-orange-500" />
+                <span className="inline-block w-2 h-2 rounded-sm bg-red-600" />
                 <span className="text-[10px] text-slate-500">Hover over any district to see mention details</span>
               </div>
             </div>
@@ -980,7 +986,7 @@ const TelanganaMap = ({ embedded = false }) => {
                     )}
                   </div>
                   {districtFeatures[hoveredDistrict]?.hasKarimnagar && (
-                    <Badge className="bg-white/20 text-white text-[10px] border-0">BSK's Constituency</Badge>
+                    <Badge className="bg-white/20 text-white text-[10px] border-0">Baghdad · Iraq</Badge>
                   )}
                 </div>
 

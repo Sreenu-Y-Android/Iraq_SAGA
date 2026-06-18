@@ -146,9 +146,9 @@ const createDefaultUsers = async () => {
   try {
     const defaultUsers = [
       {
-        email: process.env.DEFAULT_ADMIN_EMAIL || 'admin@bskwatch.in',
-        password: process.env.DEFAULT_ADMIN_PASSWORD || '#BSK@Telangana2026',
-        full_name: process.env.DEFAULT_ADMIN_NAME || 'BSK Watch Super Admin',
+        email: process.env.DEFAULT_ADMIN_EMAIL || 'admin@iraqwatch.iq',
+        password: process.env.DEFAULT_ADMIN_PASSWORD || '#IRAQ@Watch2026',
+        full_name: process.env.DEFAULT_ADMIN_NAME || 'Iraq Watch Super Admin',
         previousEmails: ['bcss@blurasaga.com', 'admin@punjabsaga.com', 'admin@blurahub.com', 'admin@blurasaga.com'],
         role: 'superadmin'
       },
@@ -561,8 +561,8 @@ const startServer = async () => {
 
   app.listen(PORT, () => {
     console.log(`╔══════════════════════════════════════════════════════════╗`);
-    console.log(`║  BSK WATCH · Bandi Sanjay Kumar · BJP Telangana          ║`);
-    console.log(`║  Social Media Intelligence backend listening on :${String(PORT).padEnd(6)}║`);
+    console.log(`║  IRAQ WATCH · Social Media Intelligence Platform         ║`);
+    console.log(`║  Iraq Political & Security Intelligence on :${String(PORT).padEnd(11)}║`);
     console.log(`╚══════════════════════════════════════════════════════════╝`);
   });
 };

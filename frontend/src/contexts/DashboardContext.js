@@ -49,10 +49,10 @@ export const DashboardProvider = ({ children }) => {
         api.get('/grievances/dashboard-stats'),
         api.get('/grievances/sentiment-analytics').catch(() => ({ data: null })),
         api.get('/grievances/category-analytics').catch(() => ({ data: null })),
-        // Single source of truth for the Karimnagar/BSK totals shown on
+        // Single source of truth for Baghdad/Iraq totals shown on
         // both /dashboard and /telangana-map. Same endpoint, same query, so
         // numbers cannot diverge between the two screens.
-        api.get('/grievances/location-summary', { params: { location_city: 'karimnagar' } }).catch(() => ({ data: null }))
+        api.get('/grievances/location-summary', { params: { location_city: 'baghdad' } }).catch(() => ({ data: null }))
       ]);
 
       const { byPlatform, pendingByPlatform, viralByPlatform } = dashStatsRes.data;
@@ -79,9 +79,9 @@ export const DashboardProvider = ({ children }) => {
       // Grievances from lightweight backend stats
       const grievanceData = grievancesStatsRes.data?.byPlatform || {};
 
-      // Karimnagar summary is the canonical BSK number shown across the
+      // Baghdad summary is the canonical Iraq number shown across the
       // app. Synthesise the dashboard's "Sentiment Analysis" payload from
-      // it so the Sentiment card and the TelanganaMap card always agree.
+      // it so the Sentiment card and the Iraq Map card always agree.
       const karimnagar = karimnagarRes?.data || null;
       const sentimentAnalytics = karimnagar
         ? {
@@ -92,7 +92,7 @@ export const DashboardProvider = ({ children }) => {
             },
             topNegative: (sentimentRes?.data?.topNegative) || [],
             total: karimnagar.total || 0,
-            scope: 'karimnagar'
+            scope: 'baghdad'
           }
         : (sentimentRes?.data || null);
 

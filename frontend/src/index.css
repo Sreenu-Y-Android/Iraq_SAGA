@@ -388,19 +388,19 @@ code {
 }
 
 /* ========================
-   BJP / BSK Brand Animations
+   Iraq Watch Brand Animations
    (used by Login page and hero sections)
    ======================== */
 @layer utilities {
 
-    /* Floating lotus flowers drifting up the background */
-    .bjp-lotus-float {
-        animation: bjpLotusFloat var(--lotus-duration, 18s) linear infinite;
+    /* Floating crescent symbols drifting up the background */
+    .iraq-symbol-float {
+        animation: iraqSymbolFloat var(--lotus-duration, 18s) linear infinite;
         animation-delay: var(--lotus-delay, 0s);
         will-change: transform, opacity;
     }
 
-    @keyframes bjpLotusFloat {
+    @keyframes iraqSymbolFloat {
         0% {
             transform: translate3d(0, 110vh, 0) rotate(0deg) scale(var(--lotus-scale, 1));
             opacity: 0;
@@ -417,49 +417,49 @@ code {
         }
     }
 
-    /* Slow gentle bloom / pulse for the centerpiece lotus */
-    .bjp-lotus-bloom {
-        animation: bjpLotusBloom 6s ease-in-out infinite;
+    /* Slow gentle bloom / pulse for the centerpiece crescent */
+    .iraq-symbol-bloom {
+        animation: iraqSymbolBloom 6s ease-in-out infinite;
         transform-origin: center;
     }
 
-    @keyframes bjpLotusBloom {
+    @keyframes iraqSymbolBloom {
         0%, 100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 18px rgba(255,153,51,0.55)); }
         50%       { transform: scale(1.06) rotate(2deg); filter: drop-shadow(0 0 32px rgba(255,179,0,0.85)); }
     }
 
     /* Petal spin for decorative ring */
-    .bjp-petal-spin-slow {
-        animation: bjpPetalSpin 38s linear infinite;
+    .iraq-spin-slow {
+        animation: iraqSpin 38s linear infinite;
     }
-    .bjp-petal-spin-reverse {
-        animation: bjpPetalSpin 52s linear infinite reverse;
+    .iraq-spin-reverse {
+        animation: iraqSpin 52s linear infinite reverse;
     }
 
-    @keyframes bjpPetalSpin {
+    @keyframes iraqSpin {
         from { transform: rotate(0deg); }
         to   { transform: rotate(360deg); }
     }
 
-    /* BJP tri-colour flag wave */
-    .bjp-flag-wave {
-        animation: bjpFlagWave 5s ease-in-out infinite;
+    /* Iraq flag wave */
+    .iraq-flag-wave {
+        animation: iraqFlagWave 5s ease-in-out infinite;
         transform-origin: left center;
     }
 
-    @keyframes bjpFlagWave {
+    @keyframes iraqFlagWave {
         0%, 100% { transform: skewY(0deg) translateY(0px); }
         25%      { transform: skewY(-2deg) translateY(-3px); }
         50%      { transform: skewY(0deg) translateY(0px); }
         75%      { transform: skewY(2deg) translateY(3px); }
     }
 
-    /* Saffron glow ring around the BSK photo */
-    .bjp-saffron-glow {
-        animation: bjpSaffronGlow 3.4s ease-in-out infinite;
+    /* Red glow ring around the Iraq Watch photo */
+    .iraq-red-glow {
+        animation: iraqRedGlow 3.4s ease-in-out infinite;
     }
 
-    @keyframes bjpSaffronGlow {
+    @keyframes iraqRedGlow {
         0%, 100% {
             box-shadow:
                 0 0 0 4px rgba(255,153,51,0.35),
@@ -475,23 +475,23 @@ code {
     }
 
     /* Slow shimmering gradient sweep for headlines/buttons */
-    .bjp-gradient-shimmer {
+    .iraq-gradient-shimmer {
         background-size: 200% 100%;
-        animation: bjpGradientShimmer 4s linear infinite;
+        animation: iraqGradientShimmer 4s linear infinite;
     }
 
-    @keyframes bjpGradientShimmer {
+    @keyframes iraqGradientShimmer {
         0%   { background-position:   0% 50%; }
         100% { background-position: 200% 50%; }
     }
 
-    /* Rising saffron particles (small dots, used behind login card) */
-    .bjp-particle {
-        animation: bjpParticleRise var(--particle-duration, 9s) linear infinite;
+    /* Rising red particles (small dots, used behind login card) */
+    .iraq-particle {
+        animation: iraqParticleRise var(--particle-duration, 9s) linear infinite;
         animation-delay: var(--particle-delay, 0s);
     }
 
-    @keyframes bjpParticleRise {
+    @keyframes iraqParticleRise {
         0%   { transform: translateY(20vh) translateX(0); opacity: 0; }
         10%  { opacity: 0.85; }
         90%  { opacity: 0.85; }
@@ -499,21 +499,21 @@ code {
     }
 
     /* Marquee for news/mention ticker */
-    .bjp-marquee {
-        animation: bjpMarquee 38s linear infinite;
+    .iraq-marquee {
+        animation: iraqMarquee 38s linear infinite;
     }
 
-    @keyframes bjpMarquee {
+    @keyframes iraqMarquee {
         from { transform: translateX(0); }
         to   { transform: translateX(-50%); }
     }
 
     /* Pulse the gold accent line under brand titles */
-    .bjp-underline-pulse {
-        animation: bjpUnderlinePulse 2.4s ease-in-out infinite;
+    .iraq-underline-pulse {
+        animation: iraqUnderlinePulse 2.4s ease-in-out infinite;
     }
 
-    @keyframes bjpUnderlinePulse {
+    @keyframes iraqUnderlinePulse {
         0%, 100% { opacity: 0.7; transform: scaleX(0.85); }
         50%      { opacity: 1;   transform: scaleX(1.05); }
     }

@@ -13,9 +13,13 @@ import {
 } from 'lucide-react';
 
 const COUNTRIES = [
-  { value: 'IN', label: 'India' },
+  { value: 'IQ', label: 'Iraq' },
   { value: 'US', label: 'USA' },
-  { value: 'GLOBAL', label: 'Worldwide' }
+  { value: 'GLOBAL', label: 'Worldwide' },
+  { value: 'IR', label: 'Iran' },
+  { value: 'SY', label: 'Syria' },
+  { value: 'TR', label: 'Turkey' },
+  { value: 'SA', label: 'Saudi Arabia' }
 ];
 
 const RANGES = [
@@ -51,12 +55,12 @@ const CATEGORIES = [
 ];
 
 const EXAMPLES = [
-  'Bandi Sanjay',
-  'Bandi Sanjay Kumar',
-  'BJP Telangana',
-  'Karimnagar MP',
-  'train accident',
-  'andhra floods'
+  'Abdul Latif Rashid',
+  'Mohammed Al-Sudani',
+  'Muqtada al-Sadr',
+  'PMF Iraq',
+  'Baghdad security',
+  'ISIS Iraq'
 ];
 
 const ChipRow = ({ icon: Icon, label, options, value, onChange, valueKey = 'value' }) => (
@@ -117,7 +121,7 @@ const SearchControls = ({
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder='Enter a keyword — e.g. "bandi sanjay", "train accident"'
+              placeholder='Enter a keyword — e.g. "Baghdad security", "ISIS Iraq"'
               className="pl-10 h-11"
             />
           </div>
