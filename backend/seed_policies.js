@@ -5,7 +5,9 @@ require('dotenv').config();
 async function seedData() {
     try {
         console.log('Connecting to target MongoDB...');
-        await mongoose.connect(process.env.MONGODB_URI);
+        const dbName = process.env.DB_NAME ? String(process.env.DB_NAME).trim() : undefined;
+        await mongoose.connect(process.env.MONGODB_URI, dbName ? { dbName } : undefined);
+        console.log(`Using database: ${dbName || '(default from URI)'}`);
         const db = mongoose.connection.db;
         
         const collections = ['policymappings', 'keywords', 'grievancesettings', 'settings'];

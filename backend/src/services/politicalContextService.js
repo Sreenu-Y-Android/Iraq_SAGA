@@ -128,9 +128,9 @@ const computeBskRelevance = (mentions, taggedKeyword, authorHandle) => {
 
     // Tagged-keyword bootstrap: the fetcher saved the keyword that pulled
     // this post; if the keyword itself was a BSK alias, treat as high.
-    const bskAliases = POLITICAL_ENTITIES.bsk.aliases.concat(
-        POLITICAL_ENTITIES.bsk_son.aliases
-    );
+    const bskAliases = Object.entries(POLITICAL_ENTITIES)
+        .filter(([key]) => isBskTarget(key))
+        .flatMap(([, ent]) => ent.aliases || []);
     if (bskAliases.some((a) => tagged.includes(a.toLowerCase()))) return 0.9;
 
     if (hasOpposition && hasAlly) return 0.8;
