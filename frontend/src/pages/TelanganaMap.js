@@ -224,6 +224,7 @@ const TelanganaMap = ({ embedded = false }) => {
       const sources = [
         '/iraq_governorates.geojson',
         '/iraq_districts.geojson',
+        '/iraq.geojson',
         '/telangana_districts.geojson',
       ];
       for (const url of sources) {
@@ -234,6 +235,10 @@ const TelanganaMap = ({ embedded = false }) => {
           if (!txt || txt.trim().length === 0) continue;
           let data;
           try { data = JSON.parse(txt); } catch (_) { continue; }
+          // iraq.geojson ships as a bare Feature, not a FeatureCollection.
+          if (data?.type === 'Feature' && data.geometry) {
+            data = { type: 'FeatureCollection', features: [data] };
+          }
           if (!data?.features?.length) continue;
 
           const normaliseProps = (props = {}) => {
