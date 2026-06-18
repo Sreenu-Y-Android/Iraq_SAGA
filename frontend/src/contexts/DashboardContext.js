@@ -79,22 +79,28 @@ export const DashboardProvider = ({ children }) => {
       // Grievances from lightweight backend stats
       const grievanceData = grievancesStatsRes.data?.byPlatform || {};
 
-      // Baghdad summary is the canonical Iraq number shown across the
-      // app. Synthesise the dashboard's "Sentiment Analysis" payload from
-      // it so the Sentiment card and the Iraq Map card always agree.
+      // Baghdad summary still powers the Iraq Map card (Baghdad-focused).
       const karimnagar = karimnagarRes?.data || null;
-      const sentimentAnalytics = karimnagar
-        ? {
-            distribution: {
-              positive: karimnagar.positive || 0,
-              negative: karimnagar.negative || 0,
-              neutral:  karimnagar.neutral  || 0
-            },
-            topNegative: (sentimentRes?.data?.topNegative) || [],
-            total: karimnagar.total || 0,
-            scope: 'baghdad'
-          }
-        : (sentimentRes?.data || null);
+
+      // The dashboard "Sentiment Analysis" donut must reflect the SAME
+      // filtered grievance set as the Mentions list (all tracked grievances,
+      // not just the Baghdad-located subset). So it reads the global
+      // sentiment-analytics endpoint directly. Fall back to the Baghdad
+      // summary only if the global call failed.
+      const sentimentAnalytics = sentimentRes?.data
+        ? { ...sentimentRes.data, scope: 'all' }
+        : (karimnagar
+            ? {
+                distribution: {
+                  positive: karimnagar.positive || 0,
+                  negative: karimnagar.negative || 0,
+                  neutral:  karimnagar.neutral  || 0
+                },
+                topNegative: [],
+                total: karimnagar.total || 0,
+                scope: 'baghdad'
+              }
+            : null);
 
       const newData = {
         alertData,

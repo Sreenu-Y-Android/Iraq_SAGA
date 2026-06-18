@@ -544,7 +544,15 @@ const TelanganaMap = ({ embedded = false }) => {
     return Math.min(Math.max(rawTop, 6), maxTop);
   }, [tooltipPos.y, dims.h]);
 
+  // Sentiment / Grievance cards track ALL filtered grievances (same set as
+  // the Mentions list), not just the Baghdad-located subset. So they prefer
+  // the global sentiment/category analytics and fall back to Baghdad only if
+  // the global calls failed.
   const totalSentiment = useMemo(() => {
+    const dist = sentimentData?.distribution;
+    if (dist) {
+      return { positive: dist.positive || 0, negative: dist.negative || 0, neutral: dist.neutral || 0 };
+    }
     if (karimnagarSummary) {
       return {
         positive: karimnagarSummary.positive || 0,
@@ -555,9 +563,20 @@ const TelanganaMap = ({ embedded = false }) => {
     const baghdad = mapStats?.baghdad || byDistrict['BAGHDAD'];
     if (baghdad) return { positive: baghdad.positive || 0, negative: baghdad.negative || 0, neutral: baghdad.neutral || 0 };
     return { positive: 0, negative: 0, neutral: 0 };
-  }, [karimnagarSummary, mapStats, byDistrict]);
+  }, [sentimentData, karimnagarSummary, mapStats, byDistrict]);
 
   const totalGrievances = useMemo(() => {
+    const dist = sentimentData?.distribution;
+    if (dist) return (dist.positive || 0) + (dist.negative || 0) + (dist.neutral || 0);
+    if (karimnagarSummary) return karimnagarSummary.total || 0;
+    const baghdad = mapStats?.baghdad || byDistrict['BAGHDAD'];
+    if (!baghdad) return 0;
+    return baghdad.total ?? baghdad.count ?? 0;
+  }, [sentimentData, karimnagarSummary, mapStats, byDistrict]);
+
+  // Baghdad-only grievance count — used for the badge on the blown-up Baghdad
+  // governorate shape (which is explicitly Baghdad, not all-Iraq).
+  const baghdadGrievances = useMemo(() => {
     if (karimnagarSummary) return karimnagarSummary.total || 0;
     const baghdad = mapStats?.baghdad || byDistrict['BAGHDAD'];
     if (!baghdad) return 0;
@@ -565,13 +584,16 @@ const TelanganaMap = ({ embedded = false }) => {
   }, [karimnagarSummary, mapStats, byDistrict]);
 
   const topCategories = useMemo(() => {
+    if (categoryData && Array.isArray(categoryData.topics) && categoryData.topics.length > 0) {
+      return mergeTopicEntries(categoryData.topics).slice(0, 6);
+    }
     if (karimnagarSummary && Array.isArray(karimnagarSummary.categories)) {
       return mergeTopicEntries(karimnagarSummary.categories).slice(0, 6);
     }
     const baghdad = mapStats?.baghdad || byDistrict['BAGHDAD'];
     if (!baghdad || !Array.isArray(baghdad.categories)) return [];
     return mergeTopicEntries(baghdad.categories).slice(0, 6);
-  }, [karimnagarSummary, mapStats, byDistrict]);
+  }, [categoryData, karimnagarSummary, mapStats, byDistrict]);
 
   if (!geojson) return <div className={cn('flex items-center justify-center', embedded ? 'h-full' : 'h-screen')}><Loader2 className="h-8 w-8 animate-spin text-green-600" /></div>;
 
@@ -798,7 +820,7 @@ const TelanganaMap = ({ embedded = false }) => {
           <Card className="p-4 border-0 shadow-md">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-sm font-semibold text-slate-700">Sentiment Analysis</h4>
-              <span className="text-[10px] font-semibold text-red-700 bg-red-50 px-2 py-0.5 rounded-full border border-red-200">Baghdad</span>
+              <span className="text-[10px] font-semibold text-red-700 bg-red-50 px-2 py-0.5 rounded-full border border-red-200">Iraq</span>
             </div>
             <div className="flex justify-center">
               <SentimentPie
@@ -962,7 +984,7 @@ const TelanganaMap = ({ embedded = false }) => {
               </text>
 
               {/* Optional grievance badge on top of the blown-up Baghdad */}
-              {(totalGrievances || 0) > 0 && (
+              {(baghdadGrievances || 0) > 0 && (
                 <g pointerEvents="none">
                   <rect
                     x={layout.karimBox.x + layout.karimBox.w / 2 - 26}
@@ -976,7 +998,7 @@ const TelanganaMap = ({ embedded = false }) => {
                     textAnchor="middle"
                     style={{ fontSize: '12px', fontWeight: 800, fill: '#fff' }}
                   >
-                    {totalGrievances}
+                    {baghdadGrievances}
                   </text>
                 </g>
               )}
