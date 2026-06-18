@@ -241,12 +241,38 @@ const TelanganaMap = ({ embedded = false }) => {
           }
           if (!data?.features?.length) continue;
 
+          // geoBoundaries ADM1 ships Iraq governorates with shapeName like
+          // "Al-Anbar" / "Ninawa" / "Salah al-Din". Map them to the canonical
+          // district keys the rest of the dashboard uses (matches CITY_TO_DISTRICT).
+          const SHAPE_TO_DIST = {
+            'AL-ANBAR': 'ANBAR',
+            'AL-BASRAH': 'BASRA',
+            'AL-MUTHANNA': 'MUTHANNA',
+            'AL-QADISIYAH': 'QADISIYYAH',
+            'AL-SULAIMANIYAH': 'SULAYMANIYAH',
+            'AN-NAJAF': 'NAJAF',
+            'BABIL': 'BABIL',
+            'BAGHDAD': 'BAGHDAD',
+            'DHI QAR': 'DHI QAR',
+            'DIYALA': 'DIYALA',
+            'DOHUK': 'DOHUK',
+            'ERBIL': 'ERBIL',
+            'KARBALA': 'KARBALA',
+            'KIRKUK': 'KIRKUK',
+            'MAYSAN': 'MAYSAN',
+            'NINAWA': 'NINEVEH',
+            'SALAH AL-DIN': 'SALADIN',
+            'WASIT': 'WASIT'
+          };
+
           const normaliseProps = (props = {}) => {
-            const dist = props.DIST_NAME || props.district || props.dtname || props.NAME_2 || props.DISTRICT || '';
-            const state = props.ST_NAME || props.st_nm || props.st_name || props.STATE || '';
+            const rawDist = props.DIST_NAME || props.district || props.dtname || props.NAME_2 || props.DISTRICT || props.shapeName || props.name || '';
+            const upper = String(rawDist).toUpperCase().trim();
+            const dist = SHAPE_TO_DIST[upper] || upper;
+            const state = props.ST_NAME || props.st_nm || props.st_name || props.STATE || props.shapeGroup || '';
             return {
               ...props,
-              DIST_NAME: String(dist || '').toUpperCase().trim(),
+              DIST_NAME: dist,
               ST_NAME:   String(state || '').toUpperCase().trim(),
               AC_NAME:   props.AC_NAME || props.ac_name || '',
               PC_NAME:   props.PC_NAME || props.pc_name || ''

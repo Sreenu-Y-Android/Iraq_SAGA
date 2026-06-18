@@ -1662,7 +1662,7 @@ const getSentimentAnalytics = async (req, res) => {
             if (distribution.hasOwnProperty(r._id)) distribution[r._id] = r.count;
         });
 
-        // 2) Top 5 profiles posting negative content
+        // 2) Profiles posting negative content (unlimited)
         const topNegative = await Grievance.aggregate([
             { $match: { is_active: true, 'analysis.sentiment': 'negative', ...bskMatch } },
             {
@@ -1674,7 +1674,6 @@ const getSentimentAnalytics = async (req, res) => {
                 }
             },
             { $sort: { count: -1 } },
-            { $limit: 5 },
             {
                 $project: {
                     _id: 0,
