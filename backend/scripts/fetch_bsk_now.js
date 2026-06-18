@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * One-shot BSK content fetch.
+ * One-shot Iraq Watch content fetch.
  *
  *   node scripts/fetch_bsk_now.js               # all platforms
  *   node scripts/fetch_bsk_now.js x             # only X / Twitter
@@ -8,7 +8,7 @@
  *   node scripts/fetch_bsk_now.js instagram
  *   node scripts/fetch_bsk_now.js youtube
  *
- * Reads active BSK keywords from the Keyword collection, hits every working
+ * Reads active Iraq keywords from the Keyword collection, hits every working
  * platform (RapidAPI X is the most reliable on the current plan), runs each
  * post through Ollama for sentiment + topic categorisation, and writes
  * everything into the Grievance collection so the dashboard / map / grid
@@ -23,7 +23,7 @@ const platform = (process.argv[2] || '').toLowerCase() || null;
 
 async function main() {
   console.log('\n╔══════════════════════════════════════════════════════════╗');
-  console.log('║  BSK WATCH · ONE-SHOT KEYWORD FETCH                      ║');
+  console.log('║  IRAQ WATCH · ONE-SHOT KEYWORD FETCH                     ║');
   console.log('╚══════════════════════════════════════════════════════════╝');
   console.log(platform ? `Platform filter: ${platform}` : 'Platform filter: ALL\n');
 

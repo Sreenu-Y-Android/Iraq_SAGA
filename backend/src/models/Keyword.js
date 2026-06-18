@@ -19,7 +19,7 @@ const keywordSchema = new mongoose.Schema({
   },
   language: {
     type: String,
-    enum: ['en', 'hi', 'te', 'all'],
+    enum: ['en', 'hi', 'te', 'ar', 'ku', 'all'],
     default: 'en'
   },
   is_active: {
