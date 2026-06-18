@@ -200,8 +200,8 @@ exports.getSearchTrends = async (req, res) => {
     }
   }
 
-  const job = (async () => {
-  const buildOptions = (cat, prop) => {
+  try {
+    const buildOptions = (cat, prop) => {
     const opts = { keyword, geo, startTime, endTime };
     if (prop) opts.property = prop;
     if (cat) opts.category = cat;

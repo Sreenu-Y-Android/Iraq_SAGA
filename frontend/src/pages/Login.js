@@ -154,7 +154,7 @@ const Login = () => {
               filter: 'drop-shadow(0 6px 18px rgba(0,0,0,0.35))',
             }}
           >
-            <LotusSVG className="w-full h-full" />
+            <CrescentStarSVG className="w-full h-full" color="#FFFFFF" />
           </div>
         ))}
       </div>
