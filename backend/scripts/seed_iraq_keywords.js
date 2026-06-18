@@ -25,24 +25,13 @@
 
 require('dotenv').config();
 const mongoose = require('mongoose');
+const connectDB = require('../src/config/db');
 
 const DRY_RUN  = process.argv.includes('--dry-run');
 const REPLACE  = process.argv.includes('--replace');
 
-// ─── Inline schema (avoids dependency on compiled models) ─────────────────────
-const { v4: uuidv4 } = require('uuid');
-
-const keywordSchema = new mongoose.Schema({
-  id:         { type: String, default: uuidv4, unique: true },
-  keyword:    { type: String, required: true, unique: true },
-  category:   { type: String, enum: ['violence', 'threat', 'hate', 'other'], required: true },
-  language:   { type: String, enum: ['en', 'hi', 'te', 'ar', 'ku', 'all'], default: 'en' },
-  is_active:  { type: Boolean, default: true },
-  weight:     { type: Number, default: 50 },
-  created_at: { type: Date, default: Date.now },
-});
-
-const Keyword = mongoose.models.Keyword || mongoose.model('Keyword', keywordSchema);
+// ─── Use the real Keyword model so DB_NAME env var is respected ───────────────
+const Keyword = require('../src/models/Keyword');
 
 // ─── Keyword definitions ───────────────────────────────────────────────────────
 
@@ -301,14 +290,13 @@ const UNIQUE_KEYWORDS = KEYWORDS.filter(k => {
 
 // ─── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
-  const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/bsk-watch';
-  const dbName   = process.env.DB_NAME ? String(process.env.DB_NAME).trim() : undefined;
+  const dbName = process.env.DB_NAME ? String(process.env.DB_NAME).trim() : '(from URI)';
 
   console.log('\n╔══════════════════════════════════════════════════════════╗');
   console.log('║  IRAQ WATCH · KEYWORD DATABASE SEED  (2026)              ║');
   console.log('╚══════════════════════════════════════════════════════════╝');
   console.log(`  Total keywords prepared : ${UNIQUE_KEYWORDS.length}`);
-  console.log(`  Database               : ${dbName || '(from URI)'}`);
+  console.log(`  Database               : ${dbName}`);
   if (DRY_RUN)  console.log('  MODE: DRY RUN — nothing will be written\n');
   if (REPLACE)  console.log('  MODE: REPLACE — existing keywords will be wiped first\n');
 
@@ -319,7 +307,7 @@ async function main() {
     return;
   }
 
-  await mongoose.connect(mongoUri, dbName ? { dbName } : undefined);
+  await connectDB();
   console.log('  Connected to MongoDB\n');
 
   if (REPLACE) {
