@@ -47,7 +47,8 @@ const BROAD_KEYWORDS = [
 
 async function run() {
   const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/bsk-watch';
-  await mongoose.connect(mongoUri);
+  const dbName   = process.env.DB_NAME ? String(process.env.DB_NAME).trim() : undefined;
+  await mongoose.connect(mongoUri, dbName ? { dbName } : undefined);
   console.log('Connected to MongoDB');
 
   const Keyword = require('../src/models/Keyword');

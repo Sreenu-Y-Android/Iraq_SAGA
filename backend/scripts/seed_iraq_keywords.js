@@ -302,11 +302,13 @@ const UNIQUE_KEYWORDS = KEYWORDS.filter(k => {
 // ─── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
   const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/bsk-watch';
+  const dbName   = process.env.DB_NAME ? String(process.env.DB_NAME).trim() : undefined;
 
   console.log('\n╔══════════════════════════════════════════════════════════╗');
   console.log('║  IRAQ WATCH · KEYWORD DATABASE SEED  (2026)              ║');
   console.log('╚══════════════════════════════════════════════════════════╝');
   console.log(`  Total keywords prepared : ${UNIQUE_KEYWORDS.length}`);
+  console.log(`  Database               : ${dbName || '(from URI)'}`);
   if (DRY_RUN)  console.log('  MODE: DRY RUN — nothing will be written\n');
   if (REPLACE)  console.log('  MODE: REPLACE — existing keywords will be wiped first\n');
 
@@ -317,7 +319,7 @@ async function main() {
     return;
   }
 
-  await mongoose.connect(mongoUri);
+  await mongoose.connect(mongoUri, dbName ? { dbName } : undefined);
   console.log('  Connected to MongoDB\n');
 
   if (REPLACE) {
